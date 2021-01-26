@@ -1,0 +1,46 @@
+create table user_account(
+    userid int not null PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL, 
+    date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+# 
+delimiter $$
+CREATE TRIGGER test1 BEFORE insert ON user_account
+    FOR EACH row 
+        BEGIN
+            DECLARE numLength INT;
+            SET numLength = (SELECT LENGTH(NEW.username));
+            IF (numLength < 6) THEN
+                SIGNAL SQLSTATE '45000' set message_text='Error: Username must consist of 6 characters at least!!!';
+            END IF;
+end;
+
+
+#
+insert into user_account(username, password)
+values('234234234234', 'asd');
+
+#
+# SELECT *  FROM user_account WHERE BINARY username = 'amirmohammad'
+
+
+#
+SELECT * FROM user_account WHERE username REGEXP '^[A-Za-z0-9]+$';
+
+
+#
+delimiter $$
+CREATE TRIGGER myTrigger BEFORE INSERT ON user_account
+    FOR EACH ROW
+        BEGIN
+            DECLARE numLength INT;
+            IF NOT (SELECT NEW.username REGEXP '[A-Za-z]' and NEW.username REGEXP '[0-9]') THEN
+                SIGNAL sqlstate '45000' set message_text = 'TADA!';
+            END IF;
+END;
+
+
+SELECT '234234234234' REGEXP '[A-Za-z]' and '234234234234' REGEXP '[0-9]'
