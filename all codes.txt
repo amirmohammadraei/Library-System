@@ -44,3 +44,53 @@ END;
 
 
 SELECT '234234234234' REGEXP '[A-Za-z]' and '234234234234' REGEXP '[0-9]'
+
+
+
+######################
+delimiter $$
+CREATE TRIGGER password_check BEFORE insert ON user_account
+    FOR EACH row 
+        BEGIN
+            DECLARE numLength INT;
+            SET numLength = (SELECT LENGTH(NEW.password));
+            IF (numLength < 8) THEN
+                SIGNAL SQLSTATE '45000' set message_text='Error: password must consist of 8 characters at least!!!';
+            END IF;
+end;
+
+
+
+
+
+##########################################
+#
+delimiter $$
+CREATE TRIGGER password_complexity BEFORE INSERT ON user_account
+    FOR EACH ROW
+        BEGIN
+            DECLARE numLength INT;
+            IF NOT (SELECT NEW.password REGEXP '[A-Za-z]' and NEW.password REGEXP '[0-9]') THEN
+                SIGNAL sqlstate '45000' set message_text = 'TADA!';
+            END IF;
+END;
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+CREATE TABLE child (
+    parent_id INT,
+    INDEX par_ind (parent_id),
+    FOREIGN KEY (parent_id)
+        REFERENCES user_account(userid)
+        ON DELETE CASCADE
+);
+
+
+
+
+(((((((((((((((((((())))))))))))))))))))
+INSERT INTO user_account (username, password) 
+    VALUES ('tom37482394stills', 'asdkjahsdkj7387928388');
+INSERT INTO child (parent_id)
+    VALUES (LAST_INSERT_ID());

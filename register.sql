@@ -1,1 +1,1 @@
-select * from user_account;
+SELECT * from child;
