@@ -1,6 +1,7 @@
 from flask import Flask, render_template, redirect, request
 import yaml
 from flask_mysqldb import MySQL
+import hashlib
 
 
 app = Flask(__name__)
@@ -15,35 +16,26 @@ mysql = MySQL(app)
 
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def login():
-    if request.method == 'POST':
+    if request.method == 'POST':        
         userDetails = request.form
         username = userDetails['username']
-        user_password = userDetails['password']
+        password = userDetails['password']
+        h = hashlib.md5(password.encode())
         cur = mysql.connection.cursor()
-        resultValue = cur.execute(f"SELECT * from user_account where username = '{username}'")
+        resultValue = cur.execute(f"SELECT * from user_account where BINARY username = '{username}' and password = '{password}'")
         userDetail = cur.fetchall()
-        print(userDetail)
-        return 'salam'
+        try:
+            userDetail[0]
+            return 'bia too'
+        except IndexError:
+            return 'ridi'
+
     return render_template('login.html')
 
 
+@app.route('/signup', methods=['GET', 'POST'])
+def sign_up():
+    return 'bia inja ghanari'
 
-
-
-
-
-
-
-
-
-
-"""
-import hashlib
-password = 'pa$$w0rd'
-password1 = 'pa$$w0rd'
-h = hashlib.md5(password.encode())
-j = hashlib.md5(password1.encode())
-print(h.hexdigest())
-print(j.hexdigest())from """
