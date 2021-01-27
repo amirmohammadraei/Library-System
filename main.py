@@ -24,12 +24,14 @@ def login():
         password = userDetails['password']
         h = hashlib.md5(password.encode())
         cur = mysql.connection.cursor()
-        resultValue = cur.execute(f"SELECT * from user_account where BINARY username = '{username}' and password = '{password}'")
+        resultValue = cur.execute(f"SELECT * from user_account where username = '{username}' and password = '{password}'")
         userDetail = cur.fetchall()
         try:
             userDetail[0]
+            print(userDetail[0][3])
             return 'bia too'
-        except IndexError:
+        except IndexError as e:
+            print(e)
             return 'ridi'
 
     return render_template('login.html')

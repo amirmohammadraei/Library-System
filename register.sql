@@ -1,1 +1,1 @@
-select * from user_account where username = 'amir' and password = 'Moh@mmad79';
+select * from user_account;

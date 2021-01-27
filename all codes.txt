@@ -1,6 +1,6 @@
 create table user_account(
     userid int not null PRIMARY KEY AUTO_INCREMENT,
-    username VARCHAR(50) NOT NULL UNIQUE,
+    username VARCHAR(50) BINARY NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     role VARCHAR(50) NOT NULL, 
     date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -9,7 +9,7 @@ create table user_account(
 
 # 
 delimiter $$
-CREATE TRIGGER test1 BEFORE insert ON user_account
+CREATE TRIGGER usernamegsix BEFORE insert ON user_account
     FOR EACH row 
         BEGIN
             DECLARE numLength INT;
@@ -34,12 +34,11 @@ SELECT * FROM user_account WHERE username REGEXP '^[A-Za-z0-9]+$';
 
 #
 delimiter $$
-CREATE TRIGGER myTrigger BEFORE INSERT ON user_account
+CREATE TRIGGER usernamecomplexity BEFORE INSERT ON user_account
     FOR EACH ROW
         BEGIN
-            DECLARE numLength INT;
             IF NOT (SELECT NEW.username REGEXP '[A-Za-z]' and NEW.username REGEXP '[0-9]') THEN
-                SIGNAL sqlstate '45000' set message_text = 'TADA!';
+                SIGNAL sqlstate '45000' set message_text = 'Username must have both alphabets an numbers!!';
             END IF;
 END;
 
@@ -50,15 +49,16 @@ SELECT '234234234234' REGEXP '[A-Za-z]' and '234234234234' REGEXP '[0-9]'
 
 ######################
 delimiter $$
-CREATE TRIGGER password_check BEFORE insert ON user_account
+CREATE TRIGGER passwordg8 BEFORE insert ON user_account
     FOR EACH row 
         BEGIN
             DECLARE numLength INT;
             SET numLength = (SELECT LENGTH(NEW.password));
             IF (numLength < 8) THEN
-                SIGNAL SQLSTATE '45000' set message_text='Error: password must consist of 8 characters at least!!!';
+                SIGNAL SQLSTATE '45000' set message_text='Error: Password must consist of 8 characters at least!!!';
             END IF;
 end;
+
 
 
 
@@ -67,12 +67,11 @@ end;
 ##########################################
 #
 delimiter $$
-CREATE TRIGGER password_complexity BEFORE INSERT ON user_account
+CREATE TRIGGER passwordcomplexity BEFORE INSERT ON user_account
     FOR EACH ROW
         BEGIN
-            DECLARE numLength INT;
             IF NOT (SELECT NEW.password REGEXP '[A-Za-z]' and NEW.password REGEXP '[0-9]') THEN
-                SIGNAL sqlstate '45000' set message_text = 'TADA!';
+                SIGNAL sqlstate '45000' set message_text = 'Password must have both alphabets an numbers!!';
             END IF;
 END;
 
