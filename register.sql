@@ -1,1 +1,1 @@
-SELECT * from child;
+show tables;
