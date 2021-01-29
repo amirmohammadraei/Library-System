@@ -52,12 +52,20 @@ def sign_up():
         cur = mysql.connection.cursor()
         exception =None
         try:
-            x = cur.execute(f"INSERT INTO user_account (username, password, role) VALUES ('{username}', '{password}', '{role}')")
+            cur.execute("INSERT INTO user_account (username, password, role) VALUES (%s, %s, %s)", (username, password, role))
+            sql = "SELECT userid FROM user_account where username = %s"
+            cur.execute(sql, [username])
+            result = cur.fetchone()
+            print(type(result[0]))
+            print(result[0])
+            cur.execute("INSERT into user_information (address, fname, surname, role, userid) VALUES (%s, %s, %s, %s, %s)", (address, fname, surname, role, result[0]))
         except MySQLdb.OperationalError as e:
             exception = e.args[1]
         except MySQLdb.IntegrityError as e:
             exception = "This username is already in use!"
 
+        mysql.connection.commit()
+        cur.close()
         print(f"username {username}, password {password}, fname {fname}, surname {surname}, address {address}, role {role}")
         return render_template('register.html', exception=exception)
     return render_template('register.html')

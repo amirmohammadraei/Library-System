@@ -1,2 +1,6 @@
-insert into user_account(username, password, role)
-values ('amirmohammad79', 'alk232323sdjasd', 'student');
+select *
+from user_account;
+
+
+
+select * from user_information;
