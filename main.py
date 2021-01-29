@@ -1,4 +1,5 @@
 from os import execle
+import re
 import MySQLdb
 from flask import Flask, render_template, redirect, request, redirect
 import yaml
@@ -8,8 +9,6 @@ import hashlib
 
 app = Flask(__name__)
 
-global userid
-global nameprof
 
 db = yaml.load(open('db.yaml'))
 app.config['MYSQL_HOST'] = db['mysql_host']
@@ -33,7 +32,12 @@ def login():
         userDetail = cur.fetchall()
         try:
             userDetail[0]
-            print(userDetail[0][3])
+            global nameprof
+            global userid
+            nameprof = userDetail[0][1]
+            userid = userDetail[0][0]
+            print(f"---------------------------------------------------{type(userid)}-------------------------------")
+            print(nameprof)
             return redirect('/profile')
         except IndexError as e:
             print(e)
@@ -81,4 +85,23 @@ def sign_up():
 
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
-    return render_template('sprofile.html', nameprof='username')
+    return render_template('sprofile.html', nameprof=nameprof)
+
+
+@app.route('/informations', methods=['GET', 'POST'])
+def informations():
+    cur = mysql.connect.cursor()
+    sql = "SELECT user_account.username, user_information.fname, user_information.surname, user_information.address, user_information.role \
+            FROM user_account INNER JOIN user_information ON user_information.userid = user_account.userid \
+            where user_account.userid = %s"
+    cur.execute(sql, str(userid))
+    res = cur.fetchall()
+    mysql.connection.commit()
+    cur.close()
+    username = res[0][0]
+    fname = res[0][1]
+    surname = res[0][2]
+    address = res[0][4]
+    role = res[0][3]
+    print(res[0])
+    return render_template("information.html", username=username, fname=fname, surname=surname, address=address, role=role)
