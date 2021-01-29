@@ -105,3 +105,25 @@ def informations():
     role = res[0][3]
     print(res[0])
     return render_template("information.html", username=username, fname=fname, surname=surname, address=address, role=role)
+
+
+@app.route('/search', methods=['GET', 'POST'])
+def search():
+    if request.method == "POST":
+        details = request.form
+        name = details['name']
+        write = details['writer']
+        date = details['date']
+        password = details['password']
+        sql = "select * from book where %s is not null and %s is not null and %s is no"
+        cur = mysql.connect.cursor()
+        cur.execute(sql, [name])
+        x = cur.fetchall()
+        print(f"------------------------------{x}")
+        return render_template('search.html')
+    return render_template('search.html')
+
+
+@app.route('/search', methods=['GET', 'POST'])
+def get_book():
+    return
