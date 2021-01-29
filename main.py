@@ -1,6 +1,6 @@
 from os import execle
 import MySQLdb
-from flask import Flask, render_template, redirect, request
+from flask import Flask, render_template, redirect, request, redirect
 import yaml
 from flask_mysqldb import MySQL
 import hashlib
@@ -66,7 +66,16 @@ def sign_up():
 
         mysql.connection.commit()
         cur.close()
-        print(f"username {username}, password {password}, fname {fname}, surname {surname}, address {address}, role {role}")
-        return render_template('register.html', exception=exception)
+        if exception is not None:
+            print(f"username {username}, password {password}, fname {fname}, surname {surname}, address {address}, role {role}")
+            return render_template('register.html', exception=exception)
+        else:
+            success = "sign up successfully"
+            return render_template('login.html', success=success)
+
     return render_template('register.html')
 
+
+@app.route('/profile', methods=['GET', 'POST'])
+def profile():
+    return render_template('sprofile.html')
