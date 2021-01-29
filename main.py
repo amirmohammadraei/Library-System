@@ -1,3 +1,5 @@
+from os import execle
+import MySQLdb
 from flask import Flask, render_template, redirect, request
 import yaml
 from flask_mysqldb import MySQL
@@ -37,7 +39,26 @@ def login():
     return render_template('login.html')
 
 
-@app.route('/signup', methods=['GET', 'POST'])
+@app.route('/register', methods=['GET', 'POST'])
 def sign_up():
-    return 'bia inja ghanari'
+    if request.method == 'POST':
+        uersDetails = request.form
+        username = uersDetails['username']
+        password = uersDetails['password']
+        fname = uersDetails['fname']
+        surname = uersDetails['surname']
+        address = uersDetails['address']
+        role = uersDetails['role']
+        cur = mysql.connection.cursor()
+        exception =None
+        try:
+            x = cur.execute(f"INSERT INTO user_account (username, password, role) VALUES ('{username}', '{password}', '{role}')")
+        except MySQLdb.OperationalError as e:
+            exception = e.args[1]
+        except MySQLdb.IntegrityError as e:
+            exception = "This username is already in use!"
+
+        print(f"username {username}, password {password}, fname {fname}, surname {surname}, address {address}, role {role}")
+        return render_template('register.html', exception=exception)
+    return render_template('register.html')
 

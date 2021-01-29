@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="login-form">
+    <form action="" method="post">
+        <h2 class="text-center">Register</h2>
+        {% if exception is not none %}
+            <p style="color: red; text-align: center;">{{ exception }}</p>
+        {% endif %}
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="username" required="required" name="username">
+        </div>
+        <div class="form-group">
+            <input type="password" class="form-control" placeholder="password" required="required" name="password">
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="first name" required="required" name="fname">
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="surname" required="required" name="surname">
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="address" required="required" name="address">
+        </div>
+        <div class="form-group">
+        <select name="role" id="role">
+            <option value="student">Student</option>
+            <option value="guser">General user</option>
+            <option value="professor">Professor</option>
+          </select>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary btn-block">Sign up</button>
+        </div>
+        Have already registerd? <a href="{{ url_for('login') }}">Sign in</a>
+    </form>
+</div>
+{% endblock body %}

@@ -94,3 +94,19 @@ INSERT INTO user_account (username, password)
     VALUES ('tom37482394stills', 'asdkjahsdkj7387928388');
 INSERT INTO child (parent_id)
     VALUES (LAST_INSERT_ID());
+
+
+
+
+
+
+
+################################################### create table user_informatio
+create table user_information (
+    address varchar(512) not null, 
+    fname varchar(50) not null, 
+    surname varchar(50) not null, 
+    role varchar(50) not null,
+    userid int not null,
+    FOREIGN KEY (`userid`) REFERENCES `user_account` (`userid`) ON DELETE CASCADE
+);
