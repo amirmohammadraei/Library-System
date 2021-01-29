@@ -15,7 +15,7 @@ CREATE TRIGGER usernamegsix BEFORE insert ON user_account
             DECLARE numLength INT;
             SET numLength = (SELECT LENGTH(NEW.username));
             IF (numLength < 6) THEN
-                SIGNAL SQLSTATE '45000' set message_text='Error: Username must consist of 6 characters at least!!!';
+                SIGNAL SQLSTATE '45000' set message_text='Username must consist of 6 characters at least!!!';
             END IF;
 end;
 
@@ -55,7 +55,7 @@ CREATE TRIGGER passwordg8 BEFORE insert ON user_account
             DECLARE numLength INT;
             SET numLength = (SELECT LENGTH(NEW.password));
             IF (numLength < 8) THEN
-                SIGNAL SQLSTATE '45000' set message_text='Error: Password must consist of 8 characters at least!!!';
+                SIGNAL SQLSTATE '45000' set message_text='Password must consist of 8 characters at least!!!';
             END IF;
 end;
 
@@ -110,3 +110,18 @@ create table user_information (
     userid int not null,
     FOREIGN KEY (`userid`) REFERENCES `user_account` (`userid`) ON DELETE CASCADE
 );
+
+
+
+
+
+##################################### join user account and user informations
+SELECT user_account.userid, user_account.username, user_information.fname, user_information.surname
+FROM user_account
+INNER JOIN user_information ON user_information.userid = user_account.userid
+where user_account.id = 1;
+
+
+################################### see table fields
+DESCRIBE user_account;
+DESCRIBE user_information;

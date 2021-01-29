@@ -3,10 +3,13 @@
 {% block body %}
 <div class="login-form">
     <form action="" method="post">
+        <h2 class="text-center">Log in</h2>
         {% if success is not none %}
             <p style="color: green; text-align: center;">{{ success }}</p>
         {% endif %}
-        <h2 class="text-center">Log in</h2>
+        {% if message %}
+            <p style="color: red; text-align: center;">{{ message }}</p>
+        {% endif %}
         <div class="form-group">
             <input type="text" class="form-control" placeholder="username" required="required" name="username">
         </div>

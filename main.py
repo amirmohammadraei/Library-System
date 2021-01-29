@@ -8,6 +8,8 @@ import hashlib
 
 app = Flask(__name__)
 
+global userid
+global nameprof
 
 db = yaml.load(open('db.yaml'))
 app.config['MYSQL_HOST'] = db['mysql_host']
@@ -20,7 +22,8 @@ mysql = MySQL(app)
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
-    if request.method == 'POST':        
+    if request.method == 'POST':    
+        message = None    
         userDetails = request.form
         username = userDetails['username']
         password = userDetails['password']
@@ -31,11 +34,11 @@ def login():
         try:
             userDetail[0]
             print(userDetail[0][3])
-            return 'bia too'
+            return redirect('/profile')
         except IndexError as e:
             print(e)
-            return 'ridi'
-
+            message = "Invalid username or password"
+        return render_template('login.html', message=message)
     return render_template('login.html')
 
 
@@ -78,4 +81,4 @@ def sign_up():
 
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
-    return render_template('sprofile.html')
+    return render_template('sprofile.html', nameprof='username')
