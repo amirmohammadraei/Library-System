@@ -1,4 +1,4 @@
-from os import execle
+from os import error, execle
 import re
 import MySQLdb
 from flask import Flask, render_template, redirect, request, redirect, url_for
@@ -172,6 +172,8 @@ def search():
         try:
             x = cur.fetchall()
             x[0][0]
+            mysql.connection.commit()
+            cur.close()
         except:
             return render_template('search.html')
         print('----------------')
@@ -192,5 +194,39 @@ def get_book():
 @app.route('/payment', methods=['GET', 'POST'])
 def payment():
     if request.method == 'POST':
-        return 'salam'
-    return render_template('payment.html')
+        money = request.form['payment']
+        cur = mysql.connect.cursor()
+        try:
+            res1 = cur.execute("UPDATE user_account SET password = 'Moh@mmad79' WHERE userid = 10")
+            mysql.connection.commit()
+            print("---------")
+            print(type(res1))
+            print("---------")
+            mysql.connection.commit()
+        except MySQLdb.OperationalError as e:
+            message = e.args[1]
+            cur.execute("select money from user_account where userid = %s", str(1))
+            res = cur.fetchall()
+            mysql.connection.commit()
+            cur.close()
+            return render_template('payment.html', money=res[0][0], message=message)      
+        return redirect('/profile')
+    else:
+        cur = mysql.connect.cursor()
+        cur.execute("select money from user_account where userid = 10")
+        res = cur.fetchall()
+        mysql.connection.commit()
+        cur.close()
+        return render_template('payment.html', money=res[0][0])
+
+
+
+@app.route('/chi', methods=['GET', 'POST'])
+def chi():
+    conn = mysql.connect.cursor()
+    conn.execute("SELECT * from user_account")
+    print(conn.fetchall())
+    mysql.connect.commit()
+    mysql.connection.commit()
+    conn.close()
+    return "mishe"

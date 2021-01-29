@@ -1,2 +1,1 @@
-insert into book(name, writer, date, verion, count, types)
-values ('bagha', 'amir', '2021-9-9', 1, 12, '');
+UPDATE user_account SET role = 'student' WHERE userid = 10;

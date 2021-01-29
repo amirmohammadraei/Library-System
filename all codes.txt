@@ -3,7 +3,9 @@ create table user_account(
     username VARCHAR(50) BINARY NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     role VARCHAR(50) NOT NULL, 
-    date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+    money integer default 0,
+    delay integer default 0
 );
 
 
@@ -146,3 +148,42 @@ create table book(
 
 insert into book(name, writer, date, verion, count, types)
 values ('100', 'amir', '2020-12-12', 0, 3, 'amoozeshi');
+
+
+
+
+
+
+
+
+
+##################################################check money
+delimiter $$
+CREATE TRIGGER checkvalue BEFORE insert ON user_account
+    FOR EACH row 
+        BEGIN
+            IF (select sign(new.money)) < 1 THEN
+                SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The money that you insert must be over 0 toman.';
+            END IF;
+end;
+
+
+delimiter $$
+CREATE TRIGGER checkbvalue BEFORE update ON user_account
+    FOR EACH row 
+        BEGIN
+            IF (select sign(new.money)) < 1 THEN
+                SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'The money that you insert must be over 0 toman.';
+            END IF;
+end;
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    $ export FLASK_APP=sample
+$ export FLASK_ENV=development
+$ flask run
