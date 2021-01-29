@@ -4,9 +4,6 @@
 <div class="login-form">
     <form action="" method="post">
         <h2 class="text-center">Search Book</h2>
-        {% if success is not none %}
-            <p style="color: green; text-align: center;">{{ success }}</p>
-        {% endif %}
         {% if message %}
             <p style="color: red; text-align: center;">{{ message }}</p>
         {% endif %}
@@ -20,7 +17,7 @@
             <input type="text" class="form-control" placeholder="date" name="date">
         </div>
         <div class="form-group">
-            <input type="text" class="form-control" placeholder="password" name="password">
+            <input type="text" class="form-control" placeholder="version" name="version">
         </div>
         <div class="form-group">
             <button type="submit" class="btn btn-primary btn-block">Search</button>

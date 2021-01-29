@@ -1,7 +1,8 @@
 from os import execle
 import re
 import MySQLdb
-from flask import Flask, render_template, redirect, request, redirect
+from flask import Flask, render_template, redirect, request, redirect, url_for
+from werkzeug import datastructures
 import yaml
 from flask_mysqldb import MySQL
 import hashlib
@@ -114,16 +115,82 @@ def search():
         name = details['name']
         write = details['writer']
         date = details['date']
-        password = details['password']
-        sql = "select * from book where %s is not null and %s is not null and %s is no"
+        version = details['version']
         cur = mysql.connect.cursor()
-        cur.execute(sql, [name])
-        x = cur.fetchall()
-        print(f"------------------------------{x}")
-        return render_template('search.html')
+        try:
+            if name != "" and write == "" and date == "" and version == "":
+                sql = "select name, writer, types, date, verion from book where name = %s"
+                cur.execute(sql, [name])
+            if name == "" and write != "" and date == "" and version == "":
+                sql = "select name, writer, types, date, verion from book where writer = %s"
+                cur.execute(sql, [write])
+            if name == "" and write == "" and date != "" and version == "":
+                sql = "select name, writer, types, date, verion from book where date = %s"
+                cur.execute(sql, [date])
+            if name == "" and write == "" and date == "" and version != "":
+                sql = "select name, writer, types, date, verion from book where verion = %s"
+                cur.execute(sql, [version])
+
+            if name != "" and write != "" and date == "" and version == "":
+                sql = "select name, writer, types, date, verion from book where name = %s and writer = %s"
+                cur.execute(sql, [name, write])
+            if name != "" and write == "" and date != "" and version == "":
+                sql = "select name, writer, types, date, verion from book where name = %s and date = %s"
+                cur.execute(sql, [name, date])
+            if name != "" and write == "" and date == "" and version != "":
+                sql = "select name, writer, types, date, verion from book where verion = %s and name = %s"
+                cur.execute(sql, [version, name])
+            if name == "" and write != "" and date != "" and version == "":
+                sql = "select name, writer, types, date, verion from book where writer = %s and date = %s"
+                cur.execute(sql, [write, date])
+            if name == "" and write != "" and date == "" and version != "":
+                sql = "select name, writer, types, date, verion from book where verion = %s and writer = %s"
+                cur.execute(sql, [version, write])
+            if name == "" and write == "" and date != "" and version != "":
+                sql = "select name, writer, types, date, verion from book where verion = %s and date = %s"
+                cur.execute(sql, [version, date])
+
+            if name != "" and write != "" and date != "" and version == "":
+                sql = "select name, writer, types, date, verion from book where name = %s and writer = %s and date = %s"
+                cur.execute(sql, [name, write, date])
+            if name != "" and write != "" and date == "" and version != "":
+                sql = "select name, writer, types, date, verion from book where name = %s and writer = %s and verion = %s"
+                cur.execute(sql, [name, write, version])
+            if name != "" and write == "" and date != "" and version != "":
+                sql = "select name, writer, types, date, verion from book where name = %s and verion = %s and date = %s"
+                cur.execute(sql, [name, version, date])
+            if name == "" and write != "" and date != "" and version != "":
+                sql = "select name, writer, types, date, verion from book where verion = %s and date = %s and writer = %s"
+                cur.execute(sql, [version, date, write])
+
+            if name != "" and write != "" and date != "" and version != "":
+                sql = "select name, writer, types, date, verion from book where name = %s and verion = %s and date = %s and writer = %s"
+                cur.execute(sql, [name, version, date, write])
+        except MySQLdb.OperationalError as e:
+            print(e)
+            return render_template('search.html', message="Please enter valid format for date field")
+        try:
+            x = cur.fetchall()
+            x[0][0]
+        except:
+            return render_template('search.html')
+        print('----------------')
+        print(x)
+        print('----------------')
+        return render_template('reserve.html', data=x)
+
     return render_template('search.html')
 
 
-@app.route('/search', methods=['GET', 'POST'])
+@app.route('/reserve', methods=['GET', 'POST'])
 def get_book():
-    return
+    if request.method == 'POST':
+        return 'sala,'
+    return render_template('reserve.html')
+
+
+@app.route('/payment', methods=['GET', 'POST'])
+def payment():
+    if request.method == 'POST':
+        return 'salam'
+    return render_template('payment.html')

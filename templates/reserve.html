@@ -1,6 +1,45 @@
 {% extends 'base.html' %}
 
 {% block body %}
-    
+<style>
+table, td, th {  
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  padding: 15px;
+}
+</style>
+<div class="profile">
+    <h3 style="text-align: center;">Reservation</h3>
+    <hr style="width:50%; color: khaki;">
+    <table>
+        <tr>
+            <th>نام کتاب</th>
+            <th>نام نویسنده</th>
+            <th>نوع</th>
+            <th>تاریخ انتشار</th>
+            <th>نسخه</th>
+        </tr>
+        
+        {% for row in data %}
+            <tr>
+                
+                {% for i in row %}
+                    <td>{{ i }}</td>
+                {% endfor %}
+                    
+            </tr>
+        {% endfor %}
+            
+    </table>
+    <br>
+</div>
 {% endblock body %}
     
