@@ -1,1 +1,1 @@
-UPDATE user_account SET role = 'student' WHERE userid = 10;
+select * from book;

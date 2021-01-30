@@ -119,52 +119,52 @@ def search():
         cur = mysql.connect.cursor()
         try:
             if name != "" and write == "" and date == "" and version == "":
-                sql = "select name, writer, types, date, verion from book where name = %s"
+                sql = "select bookid, name, writer, types, date, verion from book where name = %s"
                 cur.execute(sql, [name])
             if name == "" and write != "" and date == "" and version == "":
-                sql = "select name, writer, types, date, verion from book where writer = %s"
+                sql = "select bookid, name, writer, types, date, verion from book where writer = %s"
                 cur.execute(sql, [write])
             if name == "" and write == "" and date != "" and version == "":
-                sql = "select name, writer, types, date, verion from book where date = %s"
+                sql = "select bookid, name, writer, types, date, verion from book where date = %s"
                 cur.execute(sql, [date])
             if name == "" and write == "" and date == "" and version != "":
-                sql = "select name, writer, types, date, verion from book where verion = %s"
+                sql = "select bookid, name, writer, types, date, verion from book where verion = %s"
                 cur.execute(sql, [version])
 
             if name != "" and write != "" and date == "" and version == "":
-                sql = "select name, writer, types, date, verion from book where name = %s and writer = %s"
+                sql = "select bookid, name, writer, types, date, verion from book where name = %s and writer = %s"
                 cur.execute(sql, [name, write])
             if name != "" and write == "" and date != "" and version == "":
-                sql = "select name, writer, types, date, verion from book where name = %s and date = %s"
+                sql = "select bookid, name, writer, types, date, verion from book where name = %s and date = %s"
                 cur.execute(sql, [name, date])
             if name != "" and write == "" and date == "" and version != "":
-                sql = "select name, writer, types, date, verion from book where verion = %s and name = %s"
+                sql = "select bookid, name, writer, types, date, verion from book where verion = %s and name = %s"
                 cur.execute(sql, [version, name])
             if name == "" and write != "" and date != "" and version == "":
-                sql = "select name, writer, types, date, verion from book where writer = %s and date = %s"
+                sql = "select bookid, name, writer, types, date, verion from book where writer = %s and date = %s"
                 cur.execute(sql, [write, date])
             if name == "" and write != "" and date == "" and version != "":
-                sql = "select name, writer, types, date, verion from book where verion = %s and writer = %s"
+                sql = "select bookid, name, writer, types, date, verion from book where verion = %s and writer = %s"
                 cur.execute(sql, [version, write])
             if name == "" and write == "" and date != "" and version != "":
-                sql = "select name, writer, types, date, verion from book where verion = %s and date = %s"
+                sql = "select bookid, name, writer, types, date, verion from book where verion = %s and date = %s"
                 cur.execute(sql, [version, date])
 
             if name != "" and write != "" and date != "" and version == "":
-                sql = "select name, writer, types, date, verion from book where name = %s and writer = %s and date = %s"
+                sql = "select bookid, name, writer, types, date, verion from book where name = %s and writer = %s and date = %s"
                 cur.execute(sql, [name, write, date])
             if name != "" and write != "" and date == "" and version != "":
-                sql = "select name, writer, types, date, verion from book where name = %s and writer = %s and verion = %s"
+                sql = "select bookid, name, writer, types, date, verion from book where name = %s and writer = %s and verion = %s"
                 cur.execute(sql, [name, write, version])
             if name != "" and write == "" and date != "" and version != "":
-                sql = "select name, writer, types, date, verion from book where name = %s and verion = %s and date = %s"
+                sql = "select bookid, name, writer, types, date, verion from book where name = %s and verion = %s and date = %s"
                 cur.execute(sql, [name, version, date])
             if name == "" and write != "" and date != "" and version != "":
-                sql = "select name, writer, types, date, verion from book where verion = %s and date = %s and writer = %s"
+                sql = "select bookid, name, writer, types, date, verion from book where verion = %s and date = %s and writer = %s"
                 cur.execute(sql, [version, date, write])
 
             if name != "" and write != "" and date != "" and version != "":
-                sql = "select name, writer, types, date, verion from book where name = %s and verion = %s and date = %s and writer = %s"
+                sql = "select bookid, name, writer, types, date, verion from book where name = %s and verion = %s and date = %s and writer = %s"
                 cur.execute(sql, [name, version, date, write])
         except MySQLdb.OperationalError as e:
             print(e)
@@ -188,32 +188,35 @@ def search():
 def get_book():
     if request.method == 'POST':
         return 'sala,'
-    return render_template('reserve.html')
+    return render_template('getbook.html')
 
 
 @app.route('/payment', methods=['GET', 'POST'])
 def payment():
     if request.method == 'POST':
         money = request.form['payment']
-        cur = mysql.connect.cursor()
+        dbb = MySQLdb.connect(host="localhost", 
+        user="root", 
+        passwd="root", 
+        db="dbproject")
+        curb = dbb.cursor()
         try:
-            res1 = cur.execute("UPDATE user_account SET password = 'Moh@mmad79' WHERE userid = 10")
-            mysql.connection.commit()
-            print("---------")
-            print(type(res1))
-            print("---------")
-            mysql.connection.commit()
+            curb.execute ("UPDATE user_account SET money = money + %s WHERE userid = %s;", [money, userid])
+            dbb.commit()
         except MySQLdb.OperationalError as e:
             message = e.args[1]
-            cur.execute("select money from user_account where userid = %s", str(1))
-            res = cur.fetchall()
+            curb.execute("select money from user_account where userid = %s", [userid])
+            res = curb.fetchall()
             mysql.connection.commit()
-            cur.close()
-            return render_template('payment.html', money=res[0][0], message=message)      
-        return redirect('/profile')
+            curb.close()
+            return render_template('payment.html', money=res[0][0], message=message)  
+        curb.execute("select money from user_account where userid = %s", [userid])  
+        res = curb.fetchall()
+        curb.close()
+        return render_template('payment.html', messages= "You successfully charge your account!", money=res[0][0])
     else:
         cur = mysql.connect.cursor()
-        cur.execute("select money from user_account where userid = 10")
+        cur.execute("select money from user_account where userid = %s", [userid])
         res = cur.fetchall()
         mysql.connection.commit()
         cur.close()
@@ -223,10 +226,13 @@ def payment():
 
 @app.route('/chi', methods=['GET', 'POST'])
 def chi():
-    conn = mysql.connect.cursor()
-    conn.execute("SELECT * from user_account")
-    print(conn.fetchall())
-    mysql.connect.commit()
-    mysql.connection.commit()
-    conn.close()
-    return "mishe"
+    dbb = MySQLdb.connect(host="localhost", 
+       user="root", 
+       passwd="root", 
+       db="dbproject")
+    curb = dbb.cursor()
+    curb.execute ("UPDATE user_account SET money = money 'yasari123' WHERE userid = 1;")
+    dbb.commit()
+    curb.close()
+    return 'salam'
+    
