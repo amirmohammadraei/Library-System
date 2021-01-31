@@ -179,11 +179,19 @@ end;
 
 
 
-
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ count of book
+delimiter $$
+CREATE TRIGGER bookcount BEFORE update ON book
+    FOR EACH row 
+        BEGIN
+            IF (select sign(new.count) = -1) and (select sign(old.count) = 0) THEN
+                SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'This book is not currently available.';
+            END IF;
+end;
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    $ export FLASK_APP=sample
+    $ export FLASK_APP=main
 $ export FLASK_ENV=development
 $ flask run

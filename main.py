@@ -187,7 +187,20 @@ def search():
 @app.route('/reserve', methods=['GET', 'POST'])
 def get_book():
     if request.method == 'POST':
-        return 'sala,'
+        details = request.form['reserve']
+        dbb = MySQLdb.connect(host="localhost", 
+        user="root", 
+        passwd="root", 
+        db="dbproject")
+        curb = dbb.cursor()
+        curb.execute("select * from book where bookid = %s", [details])
+        res = curb.fetchall()
+        try:
+            print(res[0])
+        except IndexError:
+            message = "کتابی با چنین شناسه‌ای در کتابخانه موجود نیست"
+            return render_template('getbook.html', message=message)
+        return render_template('getbook.html')
     return render_template('getbook.html')
 
 
@@ -222,17 +235,3 @@ def payment():
         cur.close()
         return render_template('payment.html', money=res[0][0])
 
-
-
-@app.route('/chi', methods=['GET', 'POST'])
-def chi():
-    dbb = MySQLdb.connect(host="localhost", 
-       user="root", 
-       passwd="root", 
-       db="dbproject")
-    curb = dbb.cursor()
-    curb.execute ("UPDATE user_account SET money = money 'yasari123' WHERE userid = 1;")
-    dbb.commit()
-    curb.close()
-    return 'salam'
-    
