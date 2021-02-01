@@ -191,6 +191,13 @@ end;
 
 
 
+
+
+#################################### check role to borrow
+select * from user_account u
+join book b where u.role = 'student' and (b.types = '' or b.types = 'amoozeshi') and u.userid = 1;
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
     $ export FLASK_APP=main
 $ export FLASK_ENV=development
