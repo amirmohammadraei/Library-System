@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="login-form">
+    <form action="" method="post">
+        <h2 class="text-center">افزودن کتاب</h2>
+        {% if message %}
+            <p style="color: red; text-align: center;">{{ message }}</p>
+        {% endif %}
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="نام کتاب" name="name" required="required">
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="نویسنده" name="writer" required="required">
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="تاریخ" name="date" required="required">
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="نسخه" name="version" required="required">
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="نوع" name="type" required="required">
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="تعداد" name="count" required="required">
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary btn-block">اضافه</button>
+        </div>
+    </form>
+</div>
+{% endblock body %}
+    

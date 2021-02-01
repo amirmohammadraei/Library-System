@@ -1,5 +1,6 @@
-from os import error, execle
+from os import error, execle, write
 import re
+from typing import Counter
 import MySQLdb
 from flask import Flask, render_template, redirect, request, redirect, url_for
 from werkzeug import datastructures
@@ -37,7 +38,8 @@ def login():
             global userid
             nameprof = userDetail[0][1]
             userid = userDetail[0][0]
-            print(f"---------------------------------------------------{type(userid)}-------------------------------")
+            if userDetail[0][3] == 'manager':
+                return redirect('/manager')
             print(nameprof)
             return redirect('/profile')
         except IndexError as e:
@@ -197,8 +199,17 @@ def get_book():
         res = curb.fetchall()
         try:
             print(res[0])
+            curb.execute("UPDATE BOOK SET count = count + %s where bookid = %s", [-1, details])
+            dbb.commit()
+            res = curb.fetchall()
+            curb.close()
+            message = "کتاب با موفقیت به حساب شما اضافه شد"
+            return render_template('getbook.html', messages=message)
         except IndexError:
             message = "کتابی با چنین شناسه‌ای در کتابخانه موجود نیست"
+            return render_template('getbook.html', message=message)
+        except MySQLdb.OperationalError:
+            message = "کتاب درخواستی در حال حاضر موجود نیست"
             return render_template('getbook.html', message=message)
         return render_template('getbook.html')
     return render_template('getbook.html')
@@ -235,3 +246,31 @@ def payment():
         cur.close()
         return render_template('payment.html', money=res[0][0])
 
+
+@app.route('/manager', methods=['GET', 'POST'])
+def manager():
+    return render_template('manager.html', nameprof=nameprof)
+
+
+@app.route('/addbook', methods=['GET', 'POST'])
+def addbook():
+    if request.method == 'POST':
+        detail = request.form
+        bookname = detail['name']
+        date = detail['date']
+        version = detail['version']
+        type = detail['type']
+        writer = detail['writer']
+        count = detail['count']
+        dbb = MySQLdb.connect(host="localhost", 
+        user="root", 
+        passwd="root", 
+        db="dbproject")
+        curb = dbb.cursor()
+        try:
+            curb.execute("insert into book(name, writer, date, verion, count, types) values (%s, %s, %s, %s, %s, %s)", [bookname, writer, date, version, count, type])
+            dbb.commit()
+        except MySQLdb.OperationalError: 
+            message = "فرمت تاریخ باید به صورت 12-12-1399 باشد"
+            return render_template('addbook.html', message=message)
+    return render_template('addbook.html', nameprof=nameprof)
