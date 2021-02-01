@@ -254,3 +254,17 @@ create table getbook_opt (
     userid int not null,
     FOREIGN KEY (`userid`) REFERENCES `user_account` (`userid`) ON DELETE CASCADE
 );
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% successful request to admin inbox
+create table inbox (
+    message varchar(512) not null, 
+    operation BOOLEAN not null default True,
+    userid int not null,
+    bookid int not null,
+    FOREIGN KEY (`userid`) REFERENCES `user_account` (`userid`) ON DELETE CASCADE,
+    FOREIGN KEY (`bookid`) REFERENCES `book` (`bookid`) ON DELETE CASCADE,
+    date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

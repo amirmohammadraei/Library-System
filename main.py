@@ -255,6 +255,8 @@ def get_book():
             res = curb.fetchall()
             message = "کتاب با موفقیت به حساب شما اضافه شد"
             res = curb.execute("insert into getbook_opt(message, operation, userid) values (%s, %s, %s)", [message, True, userid])
+            message2 = "را به صورت موفقیت آمیز درخواست داده است"
+            res = curb.execute("insert into inbox(message, operation, userid, bookid) values (%s, %s, %s, %s)", [message2, True, userid, details])
             dbb.commit()
             return render_template('getbook.html', messages=message)
         except IndexError:
