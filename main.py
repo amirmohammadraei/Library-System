@@ -201,6 +201,23 @@ def get_book():
         curb = dbb.cursor()
         curb.execute("select * from book where bookid = %s", [details])
         res = curb.fetchall()
+        curb.execute("select delay from user_account where userid = %s", [userid])
+        userdelay = curb.fetchone()
+
+
+        try:
+                curb.execute("update user_account u join book b set u.money = u.money - ( b.price * 5 ) / 100 where u.userid = %s and b.bookid = %s", [userid, details])
+        except Exception as e:
+            curb.close()
+            message = "موجودی کافی نیست."
+            return render_template('getbook.html', message=message)
+
+
+        if userdelay[0] == 4:
+            curb.close()
+            message = "به دلیل ۴ بار دیر کرد در تحویل کتاب در بازه ۲ ماه اخیر، اجازه گرفتن کتاب را ندارید"
+            return render_template('getbook.html', message=message)
+
         try:
             print(res[0])
             curb.execute("UPDATE BOOK SET count = count + %s where bookid = %s", [-1, details])
@@ -212,6 +229,7 @@ def get_book():
                 try:
                     res[0]
                 except IndexError:
+                    curb.close()
                     message = "شما مجاز به گرفتن این کتاب نیستید"
                     return render_template('getbook.html', message=message)
             
@@ -221,6 +239,7 @@ def get_book():
                 try:
                     res[0]
                 except IndexError:
+                    curb.close()
                     message = "شما مجاز به گرفتن این کتاب نیستید"
                     return render_template('getbook.html', message=message)
 

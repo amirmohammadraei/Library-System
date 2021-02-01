@@ -1,1 +1,1 @@
-select (5 - 5*5/100)
+select * from book;

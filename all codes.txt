@@ -142,7 +142,8 @@ create table book(
     writer VARCHAR(50) NOT NULL,
     date date not null, 
     verion int,
-    count int
+    count int,
+    price int
 );
 
 
@@ -198,7 +199,50 @@ select * from user_account u
 join book b where u.role = 'student' and (b.types = '' or b.types = 'amoozeshi') and u.userid = 1;
 
 
+
+
+
+
+
+########################################################## kam kardane poool
+
+
+
+
+
+
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
     $ export FLASK_APP=main
 $ export FLASK_ENV=development
 $ flask run
+
+
+delimiter $$
+CREATE TRIGGER reduce_money BEFORE update ON user_account
+    FOR EACH row 
+        BEGIN
+            IF (select sign(old.money - new.money) = -1) THEN
+                SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'This book is not currently available.';
+            END IF;
+end;
+
+
+
+$$$$$$$$$$$$$$$$$$$$ test kam shodan az hesab
+update user_account u
+join book b
+set u.money = u.money - ( b.price * 5 ) / 100
+where u.userid = 1 and b.bookid = 1;
+
+
+delimiter $$
+CREATE TRIGGER reduce_money BEFORE update ON user_account
+    FOR EACH row 
+        BEGIN
+            IF (select sign(new.money) = -1) THEN
+                SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'You do not have enough money.';
+            END IF;
+end;
