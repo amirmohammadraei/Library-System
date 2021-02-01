@@ -3,6 +3,7 @@ import re
 from typing import Counter
 import MySQLdb
 from flask import Flask, render_template, redirect, request, redirect, url_for
+from flask.helpers import flash
 from werkzeug import datastructures
 import yaml
 from flask_mysqldb import MySQL
@@ -101,7 +102,7 @@ def informations():
     sql = "SELECT user_account.username, user_information.fname, user_information.surname, user_information.address, user_information.role \
             FROM user_account INNER JOIN user_information ON user_information.userid = user_account.userid \
             where user_account.userid = %s"
-    cur.execute(sql, str(userid))
+    cur.execute(sql, [userid])
     res = cur.fetchall()
     mysql.connection.commit()
     cur.close()
@@ -206,16 +207,19 @@ def get_book():
 
 
         try:
-                curb.execute("update user_account u join book b set u.money = u.money - ( b.price * 5 ) / 100 where u.userid = %s and b.bookid = %s", [userid, details])
+            curb.execute("update user_account u join book b set u.money = u.money - ( b.price * 5 ) / 100 where u.userid = %s and b.bookid = %s", [userid, details])
         except Exception as e:
-            curb.close()
             message = "موجودی کافی نیست."
+            res = curb.execute("insert into getbook_opt(message, operation, userid) values (%s, %s, %s)", [message, False, userid])
+            dbb.commit()
             return render_template('getbook.html', message=message)
 
 
         if userdelay[0] == 4:
             curb.close()
             message = "به دلیل ۴ بار دیر کرد در تحویل کتاب در بازه ۲ ماه اخیر، اجازه گرفتن کتاب را ندارید"
+            res = curb.execute("insert into getbook_opt(message, operation, userid) values (%s, %s, %s)", [message, False, userid])
+            dbb.commit()
             return render_template('getbook.html', message=message)
 
         try:
@@ -229,8 +233,9 @@ def get_book():
                 try:
                     res[0]
                 except IndexError:
-                    curb.close()
                     message = "شما مجاز به گرفتن این کتاب نیستید"
+                    res = curb.execute("insert into getbook_opt(message, operation, userid) values (%s, %s, %s)", [message, False, userid])
+                    dbb.commit()
                     return render_template('getbook.html', message=message)
             
             if user_role == 'guser':
@@ -239,21 +244,28 @@ def get_book():
                 try:
                     res[0]
                 except IndexError:
-                    curb.close()
                     message = "شما مجاز به گرفتن این کتاب نیستید"
+                    res = curb.execute("insert into getbook_opt(message, operation, userid) values (%s, %s, %s)", [message, False, userid])
+                    dbb.commit()
+                    curb.close()
                     return render_template('getbook.html', message=message)
 
 
             dbb.commit()
             res = curb.fetchall()
-            curb.close()
             message = "کتاب با موفقیت به حساب شما اضافه شد"
+            res = curb.execute("insert into getbook_opt(message, operation, userid) values (%s, %s, %s)", [message, True, userid])
+            dbb.commit()
             return render_template('getbook.html', messages=message)
         except IndexError:
             message = "کتابی با چنین شناسه‌ای در کتابخانه موجود نیست"
+            res = curb.execute("insert into getbook_opt(message, operation, userid) values (%s, %s, %s)", [message, False, userid])
+            dbb.commit()
             return render_template('getbook.html', message=message)
         except MySQLdb.OperationalError:
             message = "کتاب درخواستی در حال حاضر موجود نیست"
+            res = curb.execute("insert into getbook_opt(message, operation, userid) values (%s, %s, %s)", [message, False, userid])
+            dbb.commit()
             return render_template('getbook.html', message=message)
         return render_template('getbook.html')
     return render_template('getbook.html')
@@ -273,11 +285,18 @@ def payment():
             dbb.commit()
         except MySQLdb.OperationalError as e:
             message = e.args[1]
+            if 'Truncated' in message:
+                message = "مبلغ وارد شده باید به صورت عددی باشد"
             curb.execute("select money from user_account where userid = %s", [userid])
             res = curb.fetchall()
             mysql.connection.commit()
             curb.close()
-            return render_template('payment.html', money=res[0][0], message=message)  
+            return render_template('payment.html', money=res[0][0], message=message)
+        except:
+                message = "مبلغ وارد شده باید به صورت عددی و معقول باشد"
+                curb.execute("select money from user_account where userid = %s", [userid])
+                res = curb.fetchall()
+                return render_template('payment.html', money=res[0][0], message=message)
         curb.execute("select money from user_account where userid = %s", [userid])  
         res = curb.fetchall()
         curb.close()

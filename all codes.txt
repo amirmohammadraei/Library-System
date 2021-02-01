@@ -244,3 +244,13 @@ join book b
 set u.money = u.money - ( b.price * 5 ) / 100
 where u.userid = 1 and b.bookid = 1;
 
+
+
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ operations in get book successfull or not
+create table getbook_opt (
+    message varchar(512) not null, 
+    operation BOOLEAN not null,
+    userid int not null,
+    FOREIGN KEY (`userid`) REFERENCES `user_account` (`userid`) ON DELETE CASCADE
+);
