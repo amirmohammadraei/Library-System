@@ -205,7 +205,14 @@ join book b where u.role = 'student' and (b.types = '' or b.types = 'amoozeshi')
 
 
 ########################################################## kam kardane poool
-
+delimiter $$
+CREATE TRIGGER reduce_money BEFORE update ON user_account
+    FOR EACH row 
+        BEGIN
+            IF (select sign(new.money) = -1) THEN
+                SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'You do not have enough money.';
+            END IF;
+end;
 
 
 
@@ -237,12 +244,3 @@ join book b
 set u.money = u.money - ( b.price * 5 ) / 100
 where u.userid = 1 and b.bookid = 1;
 
-
-delimiter $$
-CREATE TRIGGER reduce_money BEFORE update ON user_account
-    FOR EACH row 
-        BEGIN
-            IF (select sign(new.money) = -1) THEN
-                SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'You do not have enough money.';
-            END IF;
-end;
