@@ -362,3 +362,29 @@ def inboxuser():
 @app.route('/givebook', methods=['GET', 'POST'])
 def givebook():
     return 'salam'
+
+
+@app.route('/delete', methods=['GET', 'POST'])
+def delete():
+    if request.method == 'POST':
+        dbb = MySQLdb.connect(host="localhost", 
+            user="root", 
+            passwd="root", 
+            db="dbproject")
+        curb = dbb.cursor()
+        detail = request.form
+        userid = detail['userid']
+        print(userid)
+        curb.execute("select * from user_account where userid = %s", [userid])
+        res12 = curb.fetchall()
+        try:
+            res12[0]
+        except IndexError:
+            return render_template('delete.html', message="کاربر با چنین مشخصاتی وجود ندارد")
+        curb.execute("DELETE FROM user_account where userid = %s", [userid])
+        res = curb.fetchall()
+        dbb.commit()
+        dbb.close()
+        return render_template('delete.html', messages="کاربر با موفقیت حذف شد")
+    return render_template('delete.html')
+    
