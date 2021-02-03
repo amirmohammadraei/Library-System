@@ -353,5 +353,12 @@ def inboxuser():
         passwd="root", 
         db="dbproject")
     curb = dbb.cursor()
-    curb.execute("SELECT * FROM inbox WHERE userid = %s", [userid])
-    return render_template
+    curb.execute("select inbox.inboxid, book.name from book join inbox where book.bookid = inbox.bookid and inbox.userid = %s;", [userid])
+    res = curb.fetchall()
+    print(res)
+    return render_template("inbox.html", data = res)
+
+
+@app.route('/givebook', methods=['GET', 'POST'])
+def givebook():
+    return 'salam'

@@ -263,6 +263,14 @@ create table inbox (
 
 
 
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$     join bara inbox
+select book.name, inbox.inboxid from book 
+join inbox where book.bookid = inbox.bookid;
+
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
     $ export FLASK_APP=main
 $ export FLASK_ENV=development
