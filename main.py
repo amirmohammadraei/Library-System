@@ -208,8 +208,13 @@ def get_book():
 
         try:
             curb.execute("update user_account u join book b set u.money = u.money - ( b.price * 5 ) / 100 where u.userid = %s and b.bookid = %s", [userid, details])
+        except MySQLdb.OperationalError:
+            message = "کتابی با چنین شناسه‌ای در کتابخانه موجود نیست"
+            res = curb.execute("insert into getbook_opt(message, operation, userid) values (%s, %s, %s)", [message, False, userid])
+            dbb.commit()
+            return render_template('getbook.html', message=message)
         except Exception as e:
-            message = "موجودی کافی نیست."
+            message = "موجودی کافی نیست"
             res = curb.execute("insert into getbook_opt(message, operation, userid) values (%s, %s, %s)", [message, False, userid])
             dbb.commit()
             return render_template('getbook.html', message=message)
@@ -235,7 +240,7 @@ def get_book():
                 except IndexError:
                     message = "شما مجاز به گرفتن این کتاب نیستید"
                     res = curb.execute("insert into getbook_opt(message, operation, userid) values (%s, %s, %s)", [message, False, userid])
-                    dbb.commit()
+                    # dbb.commit()
                     return render_template('getbook.html', message=message)
             
             if user_role == 'guser':
@@ -339,3 +344,14 @@ def addbook():
             message = "فرمت تاریخ باید به صورت 12-12-1399 باشد"
             return render_template('addbook.html', message=message)
     return render_template('addbook.html', nameprof=nameprof)
+
+
+@app.route('/inboxuser', methods=['GET', 'POST'])
+def inboxuser():
+    dbb = MySQLdb.connect(host="localhost", 
+        user="root", 
+        passwd="root", 
+        db="dbproject")
+    curb = dbb.cursor()
+    curb.execute("SELECT * FROM inbox WHERE userid = %s", [userid])
+    return render_template

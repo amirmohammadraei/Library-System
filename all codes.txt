@@ -216,17 +216,6 @@ end;
 
 
 
-
-
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    $ export FLASK_APP=main
-$ export FLASK_ENV=development
-$ flask run
-
-
 delimiter $$
 CREATE TRIGGER reduce_money BEFORE update ON user_account
     FOR EACH row 
@@ -268,3 +257,12 @@ create table inbox (
     FOREIGN KEY (`bookid`) REFERENCES `book` (`bookid`) ON DELETE CASCADE,
     date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    $ export FLASK_APP=main
+$ export FLASK_ENV=development
+$ flask run
