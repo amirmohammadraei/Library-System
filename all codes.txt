@@ -249,6 +249,7 @@ create table getbook_opt (
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% successful request to admin inbox
 create table inbox (
+    inboxid int not null PRIMARY KEY AUTO_INCREMENT,
     message varchar(512) not null, 
     operation BOOLEAN not null default True,
     userid int not null,
