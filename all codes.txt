@@ -131,9 +131,6 @@ DESCRIBE user_information;
 
 
 
-
-
-
 $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ book table
 create table book(
     bookid int not null PRIMARY KEY AUTO_INCREMENT,
@@ -149,11 +146,6 @@ create table book(
 
 insert into book(name, writer, date, verion, count, types)
 values ('100', 'amir', '2020-12-12', 0, 3, 'amoozeshi');
-
-
-
-
-
 
 
 
