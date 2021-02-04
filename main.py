@@ -358,6 +358,12 @@ def inboxuser():
     print(res)
     return render_template("inbox.html", data = res)
 
+
+@app.route('/givebook', methods=['GET', 'POST'])
+def givebook():
+    return 'salam'
+
+
 @app.route('/delete', methods=['GET', 'POST'])
 def delete():
     if request.method == 'POST':
