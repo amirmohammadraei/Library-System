@@ -398,6 +398,7 @@ def accepted():
     curb = dbb.cursor()
 
     if request.method == "POST":
+        message = None
         try:
             page = int(request.form['page'])
             curb.execute("select message, date_created, bookid, userid from inbox order by date_created DESC")
@@ -411,11 +412,25 @@ def accepted():
             count = int(count / 5 + 1)
             if page > count:
                 message= "ورودی داده شده باید کم‌تر یا برابر با تعداد جدول‌ها باشد"
+            list = []
+            tt = 0
+            for i in res:
+                print('-----------')
+                print(tt)
+                print(i)
+                print('-----------')
+                if tt <= page * 5 - 1 and tt >= (page - 1) * 5:
+                    print("**")
+                    print(tt)
+                    print("**")
+                    list.append(i)
+                tt += 1
+
         except ValueError:
             message= "ورودی داده شده نادرست است"
             return render_template('accepted.html', message=message)
 
-        return render_template('accepted.html', count=count, message=message)
+        return render_template('accepted.html', count=count, message=message, data=list)
 
     curb.execute("select message, date_created, bookid, userid from inbox order by date_created DESC")
     res = curb.fetchall()

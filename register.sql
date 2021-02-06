@@ -1,1 +1,1 @@
-select * from inbox;
+select * from inbox order by date_created DESC;
