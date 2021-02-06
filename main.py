@@ -389,3 +389,43 @@ def delete():
     return render_template('delete.html')
     
 
+@app.route('/accepted', methods=['GET', 'POST'])
+def accepted():
+    dbb = MySQLdb.connect(host="localhost", 
+            user="root", 
+            passwd="root", 
+            db="dbproject")
+    curb = dbb.cursor()
+
+    if request.method == "POST":
+        try:
+            page = int(request.form['page'])
+            curb.execute("select message, date_created, bookid, userid from inbox order by date_created DESC")
+            res = curb.fetchall()
+            count = 0
+            list = []
+            for i in res:
+                if count < 5:
+                    list.append(i)
+                count += 1
+            count = int(count / 5 + 1)
+            if page > count:
+                message= "ورودی داده شده باید کم‌تر یا برابر با تعداد جدول‌ها باشد"
+        except ValueError:
+            message= "ورودی داده شده نادرست است"
+            return render_template('accepted.html', message=message)
+
+        return render_template('accepted.html', count=count, message=message)
+
+    curb.execute("select message, date_created, bookid, userid from inbox order by date_created DESC")
+    res = curb.fetchall()
+    count = 0
+    list = []
+    for i in res:
+        if count < 5:
+            list.append(i)
+        count += 1
+    count = int(count / 5 + 1)
+    print(f"-----------------------------------------------------------------------------{count}")
+    print(res)
+    return render_template('accepted.html', data=list, count=count)

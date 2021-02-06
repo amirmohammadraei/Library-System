@@ -1,1 +1,1 @@
-select * from user_account;
+select * from inbox;
