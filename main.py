@@ -470,3 +470,27 @@ def getspecbook():
             message = "ورودی داده شده نادرست است"
         return render_template('getspecbook.html', message=message, data=natije)
     return render_template('getspecbook.html', res=res)
+
+
+@app.route('/searchuser', methods=['GET', 'POST'])
+def searchuser():
+    dbb = MySQLdb.connect(host="localhost", 
+            user="root", 
+            passwd="root", 
+            db="dbproject")
+    curb = dbb.cursor()
+    if request.method == 'POST':
+        details = request.form
+        surname = details['surname']
+        username = details['username']
+        if surname != '' and username != '':
+            curb.execute("select * from user_account a join user_information i where a.userid = i.userid and surname = %s and username = %s", [surname, username])
+        if surname != '' and username == '':
+            curb.execute("select * from user_account a join user_information i where a.userid = i.userid and surname = %s", [surname])
+        if surname == '' and username != '':
+            curb.execute("select * from user_account a join user_information i where a.userid = i.userid and username = %s" ,[username])
+        if surname == '' and username == '':
+            return render_template('searchuser.html', message='حداقل یکی از فیلد‌های جستجو باید پر شود')
+        res = curb.fetchall()
+        return render_template('ressearchuser.html')
+    return render_template('searchuser.html')
