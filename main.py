@@ -444,3 +444,29 @@ def accepted():
     print(f"-----------------------------------------------------------------------------{count}")
     print(res)
     return render_template('accepted.html', data=list, count=count)
+
+
+@app.route('/getspecbook', methods=['GET', 'POST'])
+def getspecbook():
+    res = None
+    natije = None
+    dbb = MySQLdb.connect(host="localhost", 
+            user="root", 
+            passwd="root", 
+            db="dbproject")
+    curb = dbb.cursor()
+    if request.method == 'POST':
+        message = None
+        try:
+            bookid = int(request.form['bookid'])
+            curb.execute("select message, date_created, bookid, userid from inbox where bookid = %s order by date_created DESC", [bookid])
+            natije = curb.fetchall()
+            count = 0
+            for i in natije:
+                count += 1
+            if count == 0:
+                message = "کتابی با چنین شناسه‌ای در مخزن موجود نیست"
+        except ValueError:
+            message = "ورودی داده شده نادرست است"
+        return render_template('getspecbook.html', message=message, data=natije)
+    return render_template('getspecbook.html', res=res)
