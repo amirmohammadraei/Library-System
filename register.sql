@@ -1,1 +1,1 @@
-select * from user_account a join user_information i where a.userid = i.userid;
+select * from user_information where surname = 'raei';

@@ -484,13 +484,88 @@ def searchuser():
         surname = details['surname']
         username = details['username']
         if surname != '' and username != '':
-            curb.execute("select * from user_account a join user_information i where a.userid = i.userid and surname = %s and username = %s", [surname, username])
+            curb.execute("select a.userid, a.username, a.password, i.fname, i.surname, i.address, a.role, a.date_created, a.delay, a.money from user_account a join user_information i where a.userid = i.userid and surname = %s and username = %s", [surname, username])
         if surname != '' and username == '':
-            curb.execute("select * from user_account a join user_information i where a.userid = i.userid and surname = %s", [surname])
+            curb.execute("select a.userid, a.username, a.password, i.fname, i.surname, i.address, a.role, a.date_created, a.delay, a.money from user_account a join user_information i where a.userid = i.userid and surname = %s", [surname])
         if surname == '' and username != '':
-            curb.execute("select * from user_account a join user_information i where a.userid = i.userid and username = %s" ,[username])
+            curb.execute("select a.userid, a.username, a.password, i.fname, i.surname, i.address, a.role, a.date_created, a.delay, a.money from user_account a join user_information i where a.userid = i.userid and username = %s" ,[username])
         if surname == '' and username == '':
             return render_template('searchuser.html', message='حداقل یکی از فیلد‌های جستجو باید پر شود')
+        global ressearchuser
         res = curb.fetchall()
-        return render_template('ressearchuser.html')
+        ressearchuser = res
+        count = 0
+        for i in res:
+            count += 1
+        
+        if count == 0:
+            message = 'کاربر یا کاربرانی با مشخصات داده شده وجود ندارند'
+            return render_template('searchuser.html', message=message)
+
+        return redirect(url_for('ressearchuser'))
     return render_template('searchuser.html')
+
+
+@app.route('/ressearchuser', methods=['GET', 'POST'])
+def ressearchuser():
+    if request.method == 'POST':
+        message = ''
+        count = 0
+        for i in ressearchuser:
+            count += 1
+        count = int(count / 5 + 1)
+        detail = request.form['page']
+        print(detail)
+        try:
+            page = int(detail)
+            list = []
+            if page > count:
+                count = 0
+                for i in ressearchuser:
+                    count += 1
+                count = int(count / 5 + 1)
+                tt = 0
+                list = []
+                for i in ressearchuser:
+                    if tt < 5:
+                        list.append(i)
+                    tt += 1
+                message= "ورودی داده شده باید کم‌تر یا برابر با تعداد جدول‌ها باشد"
+                return render_template('ressearchuser.html', data=list, message=message, count=count)
+            tt = 0
+            for i in ressearchuser:
+                print('-----------')
+                print(tt)
+                print(i)
+                print('-----------')
+                if tt <= page * 5 - 1 and tt >= (page - 1) * 5:
+                    print("**")
+                    print(tt)
+                    print("**")
+                    list.append(i)
+                tt += 1
+        except ValueError:
+            count = 0
+            for i in ressearchuser:
+                count += 1
+            count = int(count / 5 + 1)
+            tt = 0
+            list = []
+            for i in ressearchuser:
+                if tt < 5:
+                    list.append(i)
+                tt += 1
+            print(count)
+            return render_template('ressearchuser.html', message='وردی نامعتبر است', count=count, data=list)
+        return render_template('ressearchuser.html', data=list, message=message, count=count)
+    count = 0
+    for i in ressearchuser:
+        count += 1
+    count = int(count / 5 + 1)
+    tt = 0
+    list = []
+    for i in ressearchuser:
+        if tt < 5:
+            list.append(i)
+        tt += 1
+    return render_template('ressearchuser.html', count=count, data=list)
