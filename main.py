@@ -569,3 +569,31 @@ def ressearchuser():
             list.append(i)
         tt += 1
     return render_template('ressearchuser.html', count=count, data=list)
+
+
+@app.route('/getethg', methods=['GET', 'POST'])
+def getethg():
+    dbb = MySQLdb.connect(host="localhost", 
+            user="root", 
+            passwd="root", 
+            db="dbproject")
+    curb = dbb.cursor()
+    if request.method == 'POST':
+        useridd = request.form['userid']
+        try:
+            useridd = int(useridd)
+            curb.execute("select * from user_information where userid = %s", [useridd])
+            res1 = curb.fetchall()
+            infor = []
+            for i in res1:
+                infor.append(i)
+            curb.execute("SELECT * from getbook_opt where userid = %s", [useridd])
+            res2 = curb.fetchall()
+            data = []
+            for i in res2:
+                data.append(i)
+        except ValueError:
+            return render_template('getethg.html', message='ورودی نامعتبر است')
+
+        return render_template('resgetethg.html', data=data, infor=infor)
+    return render_template('getethg.html')

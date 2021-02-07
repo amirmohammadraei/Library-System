@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<style>
+table, td, th {  
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  padding: 15px;
+}
+</style>
+<div class="profile">
+    <h3 style="text-align: center;">دیدن اطلاعات شخصی و تاریخچه کاربر</h3>
+    {% if message %}
+            <p style="color: red; text-align: center;">{{ message }}</p>
+    {% endif %}
+    {% if messages %}
+        <p style="color: green; text-align: center;">{{ messages }}</p>
+    {% endif %}
+    <hr style="width:50%; color: khaki;">
+    <table>
+        <tr>
+            <th>آدرس</th>
+            <th>نام</th>
+            <th>نام‌خانوادگی</th>
+            <th>نوع کاربر</th>
+            <th>شناسه کاربر</th>
+        </tr>
+        
+        {% for row in infor %}
+            <tr>
+                
+                {% for i in row %}
+                    <td>{{ i }}</td>
+                    {% endfor %}
+                    
+            </tr>
+        {% endfor %}
+            
+    </table>
+    <br>
+    <br>
+    <br>
+    <table>
+        <tr>
+            <th>پیام</th>
+            <th>شرح</th>
+            <th>کاربر</th>
+        </tr>
+        
+        {% for row in data %}
+            <tr>
+                
+                {% for i in row %}
+                    <td>{{ i }}</td>
+                {% endfor %}
+                    
+            </tr>
+        {% endfor %}
+            
+    </table>
+    <br>
+</div>
+{% endblock body %}
+    

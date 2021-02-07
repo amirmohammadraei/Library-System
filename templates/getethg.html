@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="login-form">
+    <form action="" method="post">
+        <h2 class="text-center">اطلاعات کلی کاربر</h2>
+        {% if message %}
+            <p style="color: red; text-align: center;">{{ message }}</p>
+        {% endif %}
+        <hr style="width:50%; color: khaki;">
+        <div class="form-group">
+            <input type="text" class="form-control" placeholder="شناسه کاربر در مخزن" name="userid">
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary btn-block">جستجو</button>
+        </div>
+    </form>
+</div>
+{% endblock body %}
