@@ -353,15 +353,10 @@ def inboxuser():
         passwd="root", 
         db="dbproject")
     curb = dbb.cursor()
-    curb.execute("select inbox.inboxid, book.name from book join inbox where book.bookid = inbox.bookid and inbox.userid = %s;", [userid])
+    curb.execute("select inbox.inboxid, inbox.bookid, book.name from book join inbox where book.bookid = inbox.bookid and inbox.userid = %s;", [userid])
     res = curb.fetchall()
     print(res)
     return render_template("inbox.html", data = res)
-
-
-@app.route('/givebook', methods=['GET', 'POST'])
-def givebook():
-    return 'salam'
 
 
 @app.route('/delete', methods=['GET', 'POST'])
@@ -597,3 +592,26 @@ def getethg():
 
         return render_template('resgetethg.html', data=data, infor=infor)
     return render_template('getethg.html')
+
+
+@app.route('/deliverbook', methods=['GET', 'POST'])
+def deliverbook():
+    dbb = MySQLdb.connect(host="localhost", 
+            user="root", 
+            passwd="root", 
+            db="dbproject")
+    curb = dbb.cursor()
+    if request.method == 'POST':
+        bookid = request.form['bookid']
+        try:
+            bookid = int(bookid)
+            curb.execute("select * from inbox where userid = %s and inboxid = %s", [userid, bookid])
+            res = curb.fetchall()
+            count = 0
+            for i in res:
+                count += 1
+            if count == 0:
+                return render_template('deliverbook.html', message='کتابی به چنین شماره عملیاتی برای شما رزرو نشده است')
+        except ValueError:
+            return render_template('deliverbook.html', message='ورددی نادرست است')
+    return render_template('deliverbook.html')

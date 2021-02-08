@@ -1,1 +1,1 @@
-select * from `inbox`
+select * from `inbox` where userid = 1;
