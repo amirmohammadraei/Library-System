@@ -270,17 +270,17 @@ select * from inbox order by date_created DESC;
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  ezafe kardan be zaman
-UPDATE `user_account` 
-SET `date_created` = DATE_ADD(`date_created` , INTERVAL 1 DAY)
-WHERE `userid` = 1;
+UPDATE `user_account` SET `date_created` = DATE_ADD(`date_created` , INTERVAL 1 DAY) WHERE `userid` = 1;
 
 
-
+CREATE TRIGGER deliver_date BEFORE INSERT ON `inbox` 
+FOR EACH ROW SET
+    NEW.deliver_date = TIMESTAMPADD(DAY, 14, NEW.deliver_date);
 
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    $ export FLASK_APP=main
+$ export FLASK_APP=main
 $ export FLASK_ENV=development
 $ flask run
