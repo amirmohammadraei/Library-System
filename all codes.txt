@@ -265,6 +265,21 @@ join inbox where book.bookid = inbox.bookid;
 select * from inbox order by date_created DESC;
 
 
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  ezafe kardan be zaman
+UPDATE `user_account` 
+SET `date_created` = DATE_ADD(`date_created` , INTERVAL 1 DAY)
+WHERE `userid` = 1;
+
+
+
+
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
     $ export FLASK_APP=main
 $ export FLASK_ENV=development
