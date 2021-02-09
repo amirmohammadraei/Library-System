@@ -612,6 +612,10 @@ def deliverbook():
                 count += 1
             if count == 0:
                 return render_template('deliverbook.html', message='کتابی به چنین شماره عملیاتی برای شما رزرو نشده است')
+            print(res)
+
+            curb.execute("update ")
+
         except ValueError:
-            return render_template('deliverbook.html', message='ورددی نادرست است')
+            return render_template('deliverbook.html', message='ورودی نادرست است')
     return render_template('deliverbook.html')
