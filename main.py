@@ -31,7 +31,7 @@ def login():
         password = userDetails['password']
         h = hashlib.md5(password.encode())
         cur = mysql.connection.cursor()
-        resultValue = cur.execute(f"SELECT * from user_account where username = '{username}' and password = '{password}'")
+        resultValue = cur.execute(f"SELECT * from user_account where username = '{username}' and password = SHA2('{password}', 224)")
         userDetail = cur.fetchall()
         try:
             userDetail[0]
@@ -67,7 +67,7 @@ def sign_up():
         cur = mysql.connection.cursor()
         exception =None
         try:
-            cur.execute("INSERT INTO user_account (username, password, role) VALUES (%s, %s, %s)", (username, password, role))
+            cur.execute("INSERT INTO user_account (username, password, role) VALUES (%s, SHA2(%s, 224), %s)", (username, password, role))
             sql = "SELECT userid FROM user_account where username = %s"
             cur.execute(sql, [username])
             result = cur.fetchone()

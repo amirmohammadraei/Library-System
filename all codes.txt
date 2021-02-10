@@ -303,6 +303,15 @@ CREATE TRIGGER check_delay BEFORE update ON `inbox`
             END IF;
 END;
 
+*********************************************************************   hash password
+delimiter $$
+CREATE TRIGGER `hash_password`
+    AFTER INSERT ON `user_account` FOR EACH ROW
+    BEGIN
+        UPDATE user_account 
+            SET password = SHA2(new.password, 224);
+    END
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
