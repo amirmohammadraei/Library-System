@@ -3,7 +3,7 @@
 {% block body %}
 <div class="login-form">
     <form action="" method="post">
-        <h2 class="text-center">حذف کاربر</h2>
+        <h2 class="text-center">افزودن تعداد کتاب</h2>
         {% if message %}
             <p style="color: red; text-align: center;">{{ message }}</p>
         {% endif %}
@@ -13,10 +13,13 @@
         <p style="text-align: right;"><a href="{{ url_for('manager') }}">پروفایل</a></p>
         <hr style="width:50%; color: khaki;">
         <div class="form-group">
-            <input type="text" class="form-control" placeholder="شناسه کاربر در مخزن" required="required" name="userid">
+            <input type="text" class="form-control" placeholder="شناسه کتاب در کتابخانه" name="bookid" required="required">
         </div>
         <div class="form-group">
-            <button type="submit" class="btn btn-primary btn-block">ثبت</button>
+            <input type="text" class="form-control" placeholder="تعداد" name="count" required="required">
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary btn-block">اضافه</button>
         </div>
     </form>
 </div>

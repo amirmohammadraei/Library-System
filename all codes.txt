@@ -329,6 +329,27 @@ create table deliver_book (
 );
 
 
+((((((((((((((((((((((((((((((((((((((((((()))))))))))))))))))))))))))))))))))))))))))   check count and version of book  in add book
+delimiter $$
+CREATE TRIGGER count_version_book BEFORE insert ON book
+    FOR EACH row 
+        BEGIN
+            IF (select sign(new.count) = -1) or (select sign(new.count) = 0) or (select sign(new.verion) = -1) or (select sign(new.verion) = 0) THEN
+                SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'نسخه و تعداد کتاب وارد شده باید بزرگتر از صفر باشد';
+            END IF;
+end;
+
+
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& chech count in update
+delimiter $$
+CREATE TRIGGER count_version_book1 BEFORE update ON book
+    FOR EACH row 
+        BEGIN
+            IF (select sign(new.count) = -1) or (select sign(new.count) = 0) or (select sign(new.verion) = -1) or (select sign(new.verion) = 0) THEN
+                SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'نسخه و تعداد کتاب وارد شده باید بزرگتر از صفر باشد';
+            END IF;
+end;
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 $ export FLASK_APP=main

@@ -41,8 +41,9 @@ def login():
             nameprof = userDetail[0][1]
             userid = userDetail[0][0]
             user_role = userDetail[0][3]
-
-            if userDetail[0][3] == 'manager':
+            cur.execute("SELECT role from user_information where userid = %s", [userid])
+            user_role = cur.fetchall()[0][0]
+            if user_role == 'manager' or user_role == 'booker':
                 return redirect('/manager')
 
             print(nameprof)
@@ -327,6 +328,7 @@ def manager():
 @app.route('/addbook', methods=['GET', 'POST'])
 def addbook():
     if request.method == 'POST':
+        message = None
         detail = request.form
         bookname = detail['name']
         date = detail['date']
@@ -342,9 +344,24 @@ def addbook():
         try:
             curb.execute("insert into book(name, writer, date, verion, count, types) values (%s, %s, %s, %s, %s, %s)", [bookname, writer, date, version, count, type])
             dbb.commit()
-        except MySQLdb.OperationalError: 
-            message = "فرمت تاریخ باید به صورت 12-12-1399 باشد"
+            message = 'کتاب با موفقیت اضافه شد'
+        except MySQLdb.OperationalError as e:
+            print('--')
+            print(e)
+            print('--')
+            if str(e.args[0]) == str(1644):
+                message = 'نسخه و تعداد کتاب وارد شده باید بزرگتر از صفر باشد'
+            elif str(e.args[0]) == str(1292):
+                message = "فرمت تاریخ باید به صورت 12-12-1399 باشد"
             return render_template('addbook.html', message=message)
+        except MySQLdb.DataError:
+            message = "فرمت داده برای نسخه و تعداد نادرست است"
+            return render_template('addbook.html', message=message)
+        except MySQLdb.IntegrityError:
+            message = "کتاب وارد شده موجود است، برای افزایش تعداد از بخش مربوط استفاده کنید"
+            return render_template('addbook.html', message=message)
+        message = 'کتاب با موفقیت اضافه شد'
+        return render_template('addbook.html', message=message)
     return render_template('addbook.html', nameprof=nameprof)
 
 
@@ -459,11 +476,14 @@ def getspecbook():
             bookid = int(request.form['bookid'])
             curb.execute("select message, date_created, bookid, userid from inbox where bookid = %s order by date_created DESC", [bookid])
             natije = curb.fetchall()
+            print('---')
+            print(natije)
+            print('---')
             count = 0
             for i in natije:
                 count += 1
             if count == 0:
-                message = "کتابی با چنین شناسه‌ای در مخزن موجود نیست"
+                message = "اطلاعات موجود نیست"
 
             curb.execute("select message, date_delivered, bookid, userid from deliver_book where bookid = %s order by date_delivered DESC", [bookid])
             data2 = curb.fetchall()
@@ -485,11 +505,11 @@ def searchuser():
         surname = details['surname']
         username = details['username']
         if surname != '' and username != '':
-            curb.execute("select a.userid, a.username, a.password, i.fname, i.surname, i.address, a.role, a.date_created, a.delay, a.money from user_account a join user_information i where a.userid = i.userid and surname = %s and username = %s", [surname, username])
+            curb.execute("select a.userid, a.username, a.password, i.fname, i.surname, i.address, i.role, a.date_created, a.delay, a.money from user_account a join user_information i where a.userid = i.userid and surname = %s and username = %s", [surname, username])
         if surname != '' and username == '':
-            curb.execute("select a.userid, a.username, a.password, i.fname, i.surname, i.address, a.role, a.date_created, a.delay, a.money from user_account a join user_information i where a.userid = i.userid and surname = %s", [surname])
+            curb.execute("select a.userid, a.username, a.password, i.fname, i.surname, i.address, i.role, a.date_created, a.delay, a.money from user_account a join user_information i where a.userid = i.userid and surname = %s", [surname])
         if surname == '' and username != '':
-            curb.execute("select a.userid, a.username, a.password, i.fname, i.surname, i.address, a.role, a.date_created, a.delay, a.money from user_account a join user_information i where a.userid = i.userid and username = %s" ,[username])
+            curb.execute("select a.userid, a.username, a.password, i.fname, i.surname, i.address, i.role, a.date_created, a.delay, a.money from user_account a join user_information i where a.userid = i.userid and username = %s" ,[username])
         if surname == '' and username == '':
             return render_template('searchuser.html', message='حداقل یکی از فیلد‌های جستجو باید پر شود')
         global ressearchuser
@@ -651,3 +671,30 @@ def bookhdelay():
     print(res)
     print('--')
     return render_template('bookhdelay.html', data=res)
+
+
+@app.route('/countbook', methods=['GET', 'POST'])
+def countbook():
+    message = None
+    dbb = MySQLdb.connect(host="localhost", 
+            user="root", 
+            passwd="root", 
+            db="dbproject")
+    curb = dbb.cursor()
+    if request.method == 'POST':
+        details = request.form
+        bookidd = details['bookid']
+        count = details['count']
+        curb.execute("SELECT * FROM book WHERE bookid = %s", [bookidd])
+        res = curb.fetchall()
+        try:
+            print(res[0])
+        except IndexError:
+            return render_template('countbook.html', message='کتاب با چنین شناسه موجود نیست')
+        try:
+            curb.execute("update book set count = count + %s where bookid = %s", [count, bookidd])
+        except MySQLdb.OperationalError:
+            return render_template('countbook.html', message='نسخه و تعداد کتاب وارد شده باید بزرگتر از صفر باشد')
+        dbb.commit()
+        return render_template('countbook.html', messages='افزایش کتاب با موفقیت اعمال شد')
+    return render_template('countbook.html')
