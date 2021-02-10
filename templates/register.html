@@ -3,24 +3,25 @@
 {% block body %}
 <div class="login-form">
     <form action="" method="post">
-        <h2 class="text-center">Register</h2>
+        <h2 class="text-center">ثبت نام</h2>
         {% if exception is not none %}
             <p style="color: red; text-align: center;">{{ exception }}</p>
         {% endif %}
+        <hr style="width:50%; color: khaki;">
         <div class="form-group">
-            <input type="text" class="form-control" placeholder="username" required="required" name="username">
+            <input type="text" class="form-control" placeholder="نام کاربری" required="required" name="username">
         </div>
         <div class="form-group">
-            <input type="password" class="form-control" placeholder="password" required="required" name="password">
+            <input type="password" class="form-control" placeholder="گذرواژه" required="required" name="password">
         </div>
         <div class="form-group">
-            <input type="text" class="form-control" placeholder="first name" required="required" name="fname">
+            <input type="text" class="form-control" placeholder="نام" required="required" name="fname">
         </div>
         <div class="form-group">
-            <input type="text" class="form-control" placeholder="surname" required="required" name="surname">
+            <input type="text" class="form-control" placeholder="نام خانوادگی" required="required" name="surname">
         </div>
         <div class="form-group">
-            <input type="text" class="form-control" placeholder="address" required="required" name="address">
+            <input type="text" class="form-control" placeholder="آدرس" required="required" name="address">
         </div>
         <div class="form-group">
             <select name="role" id="role">
@@ -32,9 +33,9 @@
             </select>
         </div>
         <div class="form-group">
-            <button type="submit" class="btn btn-primary btn-block">Sign up</button>
+            <button type="submit" class="btn btn-primary btn-block">ثبت نام</button>
         </div>
-        Have already registerd? <a href="{{ url_for('login') }}">Sign in</a>
+        <p style="text-align: right;">از قبل ثبت نام کرده‌اید ؟ <a href="{{ url_for('login') }}"> ورود </a></p>
     </form>
 </div>
 {% endblock body %}

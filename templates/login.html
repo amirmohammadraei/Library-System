@@ -3,7 +3,7 @@
 {% block body %}
 <div class="login-form">
     <form action="" method="post">
-        <h2 class="text-center">Log in</h2>
+        <h2 class="text-center">ورود</h2>
         <hr style="width:50%; color: khaki;">
         {% if success is not none %}
             <p style="color: green; text-align: center;">{{ success }}</p>
@@ -12,15 +12,15 @@
             <p style="color: red; text-align: center;">{{ message }}</p>
         {% endif %}
         <div class="form-group">
-            <input type="text" class="form-control" placeholder="username" required="required" name="username">
+            <input type="text" class="form-control" placeholder="نام کاربری" required="required" name="username">
         </div>
         <div class="form-group">
-            <input type="password" class="form-control" placeholder="password" required="required" name="password">
+            <input type="password" class="form-control" placeholder="گذرواژه" required="required" name="password">
         </div>
         <div class="form-group">
-            <button type="submit" class="btn btn-primary btn-block">Log in</button>
+            <button type="submit" class="btn btn-primary btn-block">ورود</button>
         </div>
-        Don't have account? <a href="{{ url_for('sign_up') }}">Sign up</a>
+        <p style="text-align: right;">تا کنون ثبت ‌نام نکرده‌اید؟ <a href="{{ url_for('sign_up') }}"> ثبت نام</a></p>
     </form>
 </div>
 {% endblock body %}

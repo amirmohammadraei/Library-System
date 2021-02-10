@@ -43,8 +43,10 @@ def login():
             user_role = userDetail[0][3]
             cur.execute("SELECT role from user_information where userid = %s", [userid])
             user_role = cur.fetchall()[0][0]
-            if user_role == 'manager' or user_role == 'booker':
+            if user_role == 'manager':
                 return redirect('/manager')
+            elif user_role == 'booker':
+                return redirect('/booker')
 
             print(nameprof)
             return redirect('/profile')
@@ -86,8 +88,7 @@ def sign_up():
             print(f"username {username}, password {password}, fname {fname}, surname {surname}, address {address}, role {role}")
             return render_template('register.html', exception=exception)
         else:
-            success = "sign up successfully"
-            return render_template('login.html', success=success)
+            return render_template('signups.html')
 
     return render_template('register.html')
 
@@ -323,6 +324,11 @@ def payment():
 @app.route('/manager', methods=['GET', 'POST'])
 def manager():
     return render_template('manager.html', nameprof=nameprof)
+
+
+@app.route('/booker', methods=['GET', 'POST'])
+def booker():
+    return render_template('booker.html', nameprof=nameprof)
 
 
 @app.route('/addbook', methods=['GET', 'POST'])
@@ -698,3 +704,8 @@ def countbook():
         dbb.commit()
         return render_template('countbook.html', messages='افزایش کتاب با موفقیت اعمال شد')
     return render_template('countbook.html')
+
+
+@app.route('/signups', methods=['GET', 'POST'])
+def signups():
+    return render_template('signups.html')
