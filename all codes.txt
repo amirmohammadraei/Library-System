@@ -274,7 +274,7 @@ select * from inbox order by date_created DESC;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  ezafe kardan be zaman
 UPDATE `user_account` SET `date_created` = DATE_ADD(`date_created` , INTERVAL 1 DAY) WHERE `userid` = 1;
 
-
+delimiter $$
 CREATE TRIGGER deliver_date BEFORE INSERT ON `inbox` 
 FOR EACH ROW SET
     NEW.deliver_date = TIMESTAMPADD(DAY, 14, NEW.deliver_date);
@@ -304,6 +304,21 @@ CREATE TRIGGER check_delay BEFORE update ON `inbox`
                 set new.delays = False;
             END IF;
 END;
+
+
+
+
+
+delimiter $$
+CREATE TRIGGER check_delay BEFORE update ON `inbox`
+    FOR EACH row 
+        BEGIN
+            IF deliver_date > CURDATE() THEN
+                update inbox set delays = False;
+            END IF;
+END;
+
+
 
 *********************************************************************   hash password
 delimiter $$

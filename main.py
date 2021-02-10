@@ -650,14 +650,29 @@ def deliverbook():
                 count += 1
             if count == 0:
                 return render_template('deliverbook.html', message='کتابی به چنین شماره عملیاتی برای شما رزرو نشده است')
+            print("---------------------------------------------------------------")
             print(res)
             shomareketab = res[0][4]
-            curb.execute("update inbox set delivered = True where inboxid = %s", [bookid])
+            print(shomareketab)
+            print("---------------------------------------------------------------")
+
+            sql = 'UPDATE `inbox` SET delivered = True, delays = CASE \
+                    WHEN deliver_date > NOW() THEN False \
+                    WHEN deliver_date < NOW() THEN True\
+                    END\
+                    WHERE inboxid = %s'
+                    
+            curb.execute(sql, [bookid])
             dbb.commit()
             curb.execute("update book set count = count + 1 where bookid = %s", [shomareketab])
             dbb.commit()
             curb.execute("INSERT INTO deliver_book(message, userid, bookid) VALUES ('کتاب با موفقیت تحویل داده شد', %s, %s)", [userid, shomareketab])
             dbb.commit()
+            curb.execute("SELECT delays from inbox where inboxid = %s", [bookid])
+            res = curb.fetchall()[0][0]
+            if res == True:
+                curb.execute("UPDATE user_account set delay = delay + 1 where userid = %s", [userid])
+            dbb.close(  )
             return render_template('deliverbook.html', messages='کتاب با موفقیت تحویل داده شد')
         except ValueError:
             return render_template('deliverbook.html', message='ورودی نادرست است')
