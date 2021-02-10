@@ -25,6 +25,9 @@ th, td {
         <p style="color: green; text-align: center;">{{ messages }}</p>
     {% endif %}
     <hr style="width:50%; color: khaki;">
+
+    <p style="text-align: center;">اطلاعات شخصی</p>
+    <br>
     <table>
         <tr>
             <th>آدرس</th>
@@ -48,6 +51,8 @@ th, td {
     <br>
     <br>
     <br>
+    <p style="text-align: center;">تلاش‌ها برای دریافت کتاب</p>
+    <br>
     <table>
         <tr>
             <th>پیام</th>
@@ -67,6 +72,31 @@ th, td {
             
     </table>
     <br>
+    <br>
+    <br>
+    <p style="text-align: center;">تحویل کتاب</p>
+    <br>
+    <table>
+        <tr>
+            <th>شناسه تحویل در مخزن</th>
+            <th>پیام</th>
+            <th>شناسه کاربر</th>
+            <th>شناسه کتاب</th>
+            <th>تاریخ تحویل</th>
+        </tr>
+        
+        {% for row in data2 %}
+            <tr>
+                
+                {% for i in row %}
+                    <td>{{ i }}</td>
+                    {% endfor %}
+                    
+            </tr>
+        {% endfor %}
+            
+    </table>
+
 </div>
 {% endblock body %}
     

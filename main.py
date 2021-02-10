@@ -587,10 +587,16 @@ def getethg():
             data = []
             for i in res2:
                 data.append(i)
+
+            curb.execute("SELECT * from deliver_book where userid = %s", [useridd])
+            res3 = curb.fetchall()
+            data2 = []
+            for i in res3:
+                data2.append(i)
         except ValueError:
             return render_template('getethg.html', message='ورودی نامعتبر است')
 
-        return render_template('resgetethg.html', data=data, infor=infor)
+        return render_template('resgetethg.html', data=data, infor=infor, data2=data2)
     return render_template('getethg.html')
 
 
@@ -617,6 +623,8 @@ def deliverbook():
             curb.execute("update inbox set delivered = True where inboxid = %s", [bookid])
             dbb.commit()
             curb.execute("update book set count = count + 1 where bookid = %s", [shomareketab])
+            dbb.commit()
+            curb.execute("INSERT INTO deliver_book(message, userid, bookid) VALUES ('کتاب با موفقیت تحویل داده شد', %s, %s)", [userid, shomareketab])
             dbb.commit()
             return render_template('deliverbook.html', messages='کتاب با موفقیت تحویل داده شد')
         except ValueError:

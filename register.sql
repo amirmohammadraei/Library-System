@@ -1,1 +1,1 @@
-SELECT SHA2('reg1234', 224);
+select * from `inbox`
