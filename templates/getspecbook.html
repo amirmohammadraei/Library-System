@@ -26,6 +26,7 @@ th, td {
     {% endif %}
     <hr style="width:50%; color: khaki;">
     {% if data %}
+        <p style="text-align: center;">لیست دریافتی‌های کتاب</p>
         <table>
             <tr>
                 <th>پیام</th>
@@ -45,8 +46,35 @@ th, td {
             {% endfor %}
                 
         </table>
+        <br>
+        <br>
     {% endif %}
-    <br>
+    
+    {% if data2 %}
+        <p style="text-align: center;">لیست پس‌دادن‌های کتاب</p>
+        <table>
+            <tr>
+                <th>پیام</th>
+                <th>تاریخ</th>
+                <th>کتاب</th>
+                <th>کاربر</th>
+            </tr>
+            
+            {% for row in data2 %}
+                <tr>
+                    
+                    {% for i in row %}
+                        <td>{{ i }}</td>
+                    {% endfor %}
+                        
+                </tr>
+            {% endfor %}
+                
+        </table>
+        <br>
+        <br>
+    {% endif %}
+
     <form action="" method="post">
         <div class="form-group">
             <input type="text" class="form-control" placeholder="شناسه کتاب در مخزن" required="required" name="bookid">

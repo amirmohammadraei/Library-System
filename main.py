@@ -445,6 +445,7 @@ def accepted():
 def getspecbook():
     res = None
     natije = None
+    data2 = None
     dbb = MySQLdb.connect(host="localhost", 
             user="root", 
             passwd="root", 
@@ -461,9 +462,12 @@ def getspecbook():
                 count += 1
             if count == 0:
                 message = "کتابی با چنین شناسه‌ای در مخزن موجود نیست"
+
+            curb.execute("select message, date_delivered, bookid, userid from deliver_book where bookid = %s order by date_delivered DESC", [bookid])
+            data2 = curb.fetchall()
         except ValueError:
             message = "ورودی داده شده نادرست است"
-        return render_template('getspecbook.html', message=message, data=natije)
+        return render_template('getspecbook.html', message=message, data=natije, data2=data2)
     return render_template('getspecbook.html', res=res)
 
 
