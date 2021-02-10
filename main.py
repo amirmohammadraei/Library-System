@@ -605,7 +605,7 @@ def deliverbook():
         bookid = request.form['bookid']
         try:
             bookid = int(bookid)
-            curb.execute("select * from inbox where userid = %s and inboxid = %s", [userid, bookid])
+            curb.execute("select * from inbox where userid = %s and inboxid = %s and delivered = False", [userid, bookid])
             res = curb.fetchall()
             count = 0
             for i in res:
@@ -613,9 +613,17 @@ def deliverbook():
             if count == 0:
                 return render_template('deliverbook.html', message='کتابی به چنین شماره عملیاتی برای شما رزرو نشده است')
             print(res)
-
-            curb.execute("update ")
-
+            shomareketab = res[0][4]
+            curb.execute("update inbox set delivered = True where inboxid = %s", [bookid])
+            dbb.commit()
+            curb.execute("update book set count = count + 1 where bookid = %s", [shomareketab])
+            dbb.commit()
+            return render_template('deliverbook.html', messages='کتاب با موفقیت تحویل داده شد')
         except ValueError:
             return render_template('deliverbook.html', message='ورودی نادرست است')
     return render_template('deliverbook.html')
+
+
+@app.route('/bookhdelay', methods=['GET', 'POST'])
+def bookhdelay():
+    return 'salam'

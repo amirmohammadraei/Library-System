@@ -280,6 +280,31 @@ FOR EACH ROW SET
 
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% add delivered or not in inbox
+alter table `inbox`
+add column delivered boolean default False;
+
+alter table `inbox`
+add column delays boolean default False;
+
+
+
+*************************************************************  compare date
+select '2000-12-12' < CURDATE();
+
+
+###########################################################   trigger to check delay in deliver
+delimiter $$
+CREATE TRIGGER check_delay BEFORE update ON `inbox`
+    FOR EACH row 
+        BEGIN
+            IF old.deliver_date > CURDATE() THEN
+                set new.delays = False;
+            END IF;
+END;
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 $ export FLASK_APP=main
 $ export FLASK_ENV=development
