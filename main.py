@@ -626,4 +626,14 @@ def deliverbook():
 
 @app.route('/bookhdelay', methods=['GET', 'POST'])
 def bookhdelay():
-    return 'salam'
+    dbb = MySQLdb.connect(host="localhost", 
+            user="root", 
+            passwd="root", 
+            db="dbproject")
+    curb = dbb.cursor()
+    curb.execute("SELECT * FROM inbox where deliver_date < CURDATE()")
+    res = curb.fetchall()
+    print('--')
+    print(res)
+    print('--')
+    return render_template('bookhdelay.html', data=res)

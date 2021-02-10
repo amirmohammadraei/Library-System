@@ -1,1 +1,1 @@
-select * from `book`
+select * from inbox
