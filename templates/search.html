@@ -3,24 +3,26 @@
 {% block body %}
 <div class="login-form">
     <form action="" method="post">
-        <h2 class="text-center">Search Book</h2>
+        <h2 class="text-center">جستجو کتاب</h2>
+        <p style="text-align: right;"><a href="{{ url_for('profile') }}">پروفایل</a></p>
+        <hr style="width:50%; color: khaki;">
         {% if message %}
             <p style="color: red; text-align: center;">{{ message }}</p>
         {% endif %}
         <div class="form-group">
-            <input type="text" class="form-control" placeholder="name" name="name">
+            <input type="text" class="form-control" placeholder="نام کتاب" name="name">
         </div>
         <div class="form-group">
-            <input type="text" class="form-control" placeholder="writer" name="writer">
+            <input type="text" class="form-control" placeholder="نویسنده" name="writer">
         </div>
         <div class="form-group">
-            <input type="text" class="form-control" placeholder="date" name="date">
+            <input type="text" class="form-control" placeholder="زمان چاپ" name="date">
         </div>
         <div class="form-group">
-            <input type="text" class="form-control" placeholder="version" name="version">
+            <input type="text" class="form-control" placeholder="نسخه" name="version">
         </div>
         <div class="form-group">
-            <button type="submit" class="btn btn-primary btn-block">Search</button>
+            <button type="submit" class="btn btn-primary btn-block">جستجو</button>
         </div>
     </form>
 </div>

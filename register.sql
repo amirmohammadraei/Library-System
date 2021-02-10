@@ -1,1 +1,1 @@
-select * from deliver_book
+select * from book

@@ -67,7 +67,7 @@ def sign_up():
         cur = mysql.connection.cursor()
         exception =None
         try:
-            cur.execute("INSERT INTO user_account (username, password, role) VALUES (%s, SHA2(%s, 224), %s)", (username, password, role))
+            cur.execute("INSERT INTO user_account (username, password) VALUES (%s, %s)", (username, password))
             sql = "SELECT userid FROM user_account where username = %s"
             cur.execute(sql, [username])
             result = cur.fetchone()
@@ -126,52 +126,52 @@ def search():
         cur = mysql.connect.cursor()
         try:
             if name != "" and write == "" and date == "" and version == "":
-                sql = "select bookid, name, writer, types, date, verion from book where name = %s order by name"
+                sql = "select bookid, name, writer, types, date, verion, count, price from book where name = %s order by name"
                 cur.execute(sql, [name])
             if name == "" and write != "" and date == "" and version == "":
-                sql = "select bookid, name, writer, types, date, verion from book where writer = %s order by name"
+                sql = "select bookid, name, writer, types, date, verion, count, price from book where writer = %s order by name"
                 cur.execute(sql, [write])
             if name == "" and write == "" and date != "" and version == "":
-                sql = "select bookid, name, writer, types, date, verion from book where date = %s order by name"
+                sql = "select bookid, name, writer, types, date, verion, count, price from book where date = %s order by name"
                 cur.execute(sql, [date])
             if name == "" and write == "" and date == "" and version != "":
-                sql = "select bookid, name, writer, types, date, verion from book where verion = %s order by name"
+                sql = "select bookid, name, writer, types, date, verion, count, price from book where verion = %s order by name"
                 cur.execute(sql, [version])
 
             if name != "" and write != "" and date == "" and version == "":
-                sql = "select bookid, name, writer, types, date, verion from book where name = %s and writer = %s order by name"
+                sql = "select bookid, name, writer, types, date, verion, count, price from book where name = %s and writer = %s order by name"
                 cur.execute(sql, [name, write])
             if name != "" and write == "" and date != "" and version == "":
-                sql = "select bookid, name, writer, types, date, verion from book where name = %s and date = %s order by name"
+                sql = "select bookid, name, writer, types, date, verion, count, price from book where name = %s and date = %s order by name"
                 cur.execute(sql, [name, date])
             if name != "" and write == "" and date == "" and version != "":
-                sql = "select bookid, name, writer, types, date, verion from book where verion = %s and name = %s order by name"
+                sql = "select bookid, name, writer, types, date, verion, count, price from book where verion = %s and name = %s order by name"
                 cur.execute(sql, [version, name])
             if name == "" and write != "" and date != "" and version == "":
-                sql = "select bookid, name, writer, types, date, verion from book where writer = %s and date = %s order by name"
+                sql = "select bookid, name, writer, types, date, verion, count, price from book where writer = %s and date = %s order by name"
                 cur.execute(sql, [write, date])
             if name == "" and write != "" and date == "" and version != "":
-                sql = "select bookid, name, writer, types, date, verion from book where verion = %s and writer = %s order by name"
+                sql = "select bookid, name, writer, types, date, verion, count, price from book where verion = %s and writer = %s order by name"
                 cur.execute(sql, [version, write])
             if name == "" and write == "" and date != "" and version != "":
-                sql = "select bookid, name, writer, types, date, verion from book where verion = %s and date = %s order by name"
+                sql = "select bookid, name, writer, types, date, verion, count, pricefrom book where verion = %s and date = %s order by name"
                 cur.execute(sql, [version, date])
 
             if name != "" and write != "" and date != "" and version == "":
-                sql = "select bookid, name, writer, types, date, verion from book where name = %s and writer = %s and date = %s order by name"
+                sql = "select bookid, name, writer, types, date, verion, count, price from book where name = %s and writer = %s and date = %s order by name"
                 cur.execute(sql, [name, write, date])
             if name != "" and write != "" and date == "" and version != "":
-                sql = "select bookid, name, writer, types, date, verion from book where name = %s and writer = %s and verion = %s order by name"
+                sql = "select bookid, name, writer, types, date, verion, count, price from book where name = %s and writer = %s and verion = %s order by name"
                 cur.execute(sql, [name, write, version])
             if name != "" and write == "" and date != "" and version != "":
-                sql = "select bookid, name, writer, types, date, verion from book where name = %s and verion = %s and date = %s order by name"
+                sql = "select bookid, name, writer, types, date, verion, count, price from book where name = %s and verion = %s and date = %s order by name"
                 cur.execute(sql, [name, version, date])
             if name == "" and write != "" and date != "" and version != "":
-                sql = "select bookid, name, writer, types, date, verion from book where verion = %s and date = %s and writer = %s order by name"
+                sql = "select bookid, name, writer, types, date, verion, count, price from book where verion = %s and date = %s and writer = %s order by name"
                 cur.execute(sql, [version, date, write])
 
             if name != "" and write != "" and date != "" and version != "":
-                sql = "select bookid, name, writer, types, date, verion from book where name = %s and verion = %s and date = %s and writer = %s order by name"
+                sql = "select bookid, name, writer, types, date, verio, count, price from book where name = %s and verion = %s and date = %s and writer = %s order by name"
                 cur.execute(sql, [name, version, date, write])
         except MySQLdb.OperationalError as e:
             print(e)
@@ -208,13 +208,15 @@ def get_book():
 
         try:
             curb.execute("update user_account u join book b set u.money = u.money - ( b.price * 5 ) / 100 where u.userid = %s and b.bookid = %s", [userid, details])
-        except MySQLdb.OperationalError:
-            message = "کتابی با چنین شناسه‌ای در کتابخانه موجود نیست"
-            res = curb.execute("insert into getbook_opt(message, operation, userid) values (%s, %s, %s)", [message, False, userid])
-            dbb.commit()
-            return render_template('getbook.html', message=message)
-        except Exception as e:
-            message = "موجودی کافی نیست"
+        except MySQLdb.OperationalError as e:
+            print('--')
+            print(e)
+            print(e.args[0])
+            print('--')
+            if str(e.args[0]) == str(1292):
+                message = 'کتابی با چنین شناسه‌ای موجود نیست'
+            else:
+                message = "موجودی کافی نیست"
             res = curb.execute("insert into getbook_opt(message, operation, userid) values (%s, %s, %s)", [message, False, userid])
             dbb.commit()
             return render_template('getbook.html', message=message)
@@ -265,7 +267,7 @@ def get_book():
             dbb.commit()
             return render_template('getbook.html', messages=message)
         except IndexError:
-            message = "کتابی با چنین شناسه‌ای در کتابخانه موجود نیست"
+            message = "کتابی با چنین شناسه‌ای موجود نیست"
             res = curb.execute("insert into getbook_opt(message, operation, userid) values (%s, %s, %s)", [message, False, userid])
             dbb.commit()
             return render_template('getbook.html', message=message)
@@ -307,7 +309,7 @@ def payment():
         curb.execute("select money from user_account where userid = %s", [userid])  
         res = curb.fetchall()
         curb.close()
-        return render_template('payment.html', messages= "You successfully charge your account!", money=res[0][0])
+        return render_template('payment.html', messages= "موجودی با موفقیت اضافه شد", money=res[0][0])
     else:
         cur = mysql.connect.cursor()
         cur.execute("select money from user_account where userid = %s", [userid])
@@ -353,7 +355,7 @@ def inboxuser():
         passwd="root", 
         db="dbproject")
     curb = dbb.cursor()
-    curb.execute("select inbox.inboxid, inbox.bookid, book.name from book join inbox where book.bookid = inbox.bookid and inbox.userid = %s;", [userid])
+    curb.execute("select inbox.inboxid, inbox.bookid, book.name, inbox.delivered from book join inbox where book.bookid = inbox.bookid and inbox.userid = %s;", [userid])
     res = curb.fetchall()
     print(res)
     return render_template("inbox.html", data = res)

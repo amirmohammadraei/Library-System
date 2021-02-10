@@ -74,6 +74,8 @@ CREATE TRIGGER passwordcomplexity BEFORE INSERT ON user_account
         BEGIN
             IF NOT (SELECT NEW.password REGEXP '[A-Za-z]' and NEW.password REGEXP '[0-9]') THEN
                 SIGNAL sqlstate '45000' set message_text = 'Password must have both alphabets an numbers!!';
+            else
+                set new.password = SHA2(new.password, 224);
             END IF;
 END;
 

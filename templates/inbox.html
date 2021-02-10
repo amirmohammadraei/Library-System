@@ -18,12 +18,14 @@ th, td {
 </style>
 <div class="profile">
     <h3 style="text-align: center;">کتاب‌های گرفته شده</h3>
+    <p style="text-align: right;"><a href="{{ url_for('profile') }}">پروفایل</a></p>
         <hr style="width:50%; color: khaki;">
     <table>
         <tr>
             <th>شناسه عملیات در مخزن</th>
             <th>شناسه کتاب در مخرن</th>
             <th>نام کتاب</th>
+            <th>تحویل داده شده</th>
         </tr>
         
         {% for row in data %}

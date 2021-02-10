@@ -16,8 +16,9 @@ th, td {
   padding: 15px;
 }
 </style>
-<div class="profile">
-    <h3 style="text-align: center;">Reservation</h3>
+<div class="profile1">
+    <h3 style="text-align: center;">کتاب</h3>
+    <p style="text-align: right;"><a href="{{ url_for('profile') }}">پروفایل</a></p>
         <hr style="width:50%; color: khaki;">
     <table>
         <tr>
@@ -27,6 +28,8 @@ th, td {
             <th>نوع</th>
             <th>تاریخ انتشار</th>
             <th>نسخه</th>
+            <th>تعداد</th>
+            <th>قیمت</th>
         </tr>
         
         {% for row in data %}
