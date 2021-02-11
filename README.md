@@ -1,3 +1,1 @@
-# Library-System
-project of course database
-Nofunctionality, no clean code 
+Implementation a Library system as the final project of the database course
